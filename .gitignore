@@ -1,0 +1,22 @@
+# Build output from flutter
+Codigo/build/
+Codigo/.dart_tool/
+Codigo/.flutter-plugins-dependencies
+Codigo/.pub-cache/
+Codigo/.pub/
+
+# Gradle & Android build files
+Codigo/android/.gradle/
+Codigo/android/local.properties
+Codigo/android/app/debug/
+Codigo/android/app/profile/
+Codigo/android/app/release/
+
+# Windows C++ temp files
+Codigo/windows/flutter/ephemeral/
+
+# OS / Editor files
+.DS_Store
+Thumbs.db
+*.tmp
+*.log
