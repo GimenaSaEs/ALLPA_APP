@@ -44,7 +44,7 @@ flutter test --reporter expanded
 flutter build apk --debug
 ```
 
-En la verificación del 17-11-2026, `flutter analyze` no reportó problemas, pasaron 5 pruebas automatizadas y el APK debug se generó correctamente en `build/app/outputs/flutter-apk/app-debug.apk`. También se instaló y abrió en Samsung SM-A155M Android 14. OFF-01 verificó que un perfil sintético reaparece tras forzar cierre y relanzar con Wi-Fi/datos móviles apagados. Esta comprobación no acredita el CRUD de todas las entidades. Resultados y límites: [RESULTADOS.md](documentacion_tesis/05_pruebas/RESULTADOS.md).
+En la verificación del 17-11-2026, `flutter analyze` no reportó problemas, pasaron 6 pruebas automatizadas y el APK debug se generó correctamente en `build/app/outputs/flutter-apk/app-debug.apk`. También se instaló y abrió en Samsung SM-A155M Android 14; se comprobó el formulario de cultivo y el selector de fecha en español. OFF-01 verificó que un perfil sintético reaparece tras forzar cierre y relanzar con Wi-Fi/datos móviles apagados. Estas comprobaciones no acreditan el CRUD de todas las entidades. Resultados y límites: [RESULTADOS.md](documentacion_tesis/05_pruebas/RESULTADOS.md).
 
 El APK es debug y no corresponde a una distribución release firmada. Ruta: `build/app/outputs/flutter-apk/app-debug.apk` (el directorio `build/` está excluido por `.gitignore`). Para regenerar: `flutter build apk --debug`.
 

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
 import 'core/theme/app_theme.dart';
@@ -6,8 +8,9 @@ import 'presentation/providers/allpa_provider.dart';
 import 'presentation/screens/home_dashboard_screen.dart';
 import 'presentation/screens/welcome_screen.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('es_ES');
   runApp(const MyApp());
 }
 
@@ -28,6 +31,9 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'ALLPA',
         debugShowCheckedModeBanner: false,
+        locale: const Locale('es', 'ES'),
+        supportedLocales: const [Locale('es', 'ES')],
+        localizationsDelegates: GlobalMaterialLocalizations.delegates,
         theme: AppTheme.lightTheme,
         home: const _AppEntry(),
       ),

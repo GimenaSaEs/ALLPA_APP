@@ -9,6 +9,7 @@
 | UI-01 | Abrir bienvenida ALLPA sin datos de inicio | Pasó |
 | UI-02 | Desde bienvenida navegar al formulario de perfil | Pasó |
 | UI-03 | Navegar en panel a terrenos y cultivos | Pasó |
+| UI-04 | Formatear fecha y abrir selector de fecha en español | Pasó en widget y verificado en Android dentro del formulario de cultivo; EV-08 |
 | OFF-01 | Apagar Wi-Fi/datos, forzar cierre y relanzar; comprobar perfil local | Pasó para el perfil sintético en Samsung SM-A155M Android 14; evidencia EV-13 |
 
 ## Pendientes
@@ -17,6 +18,6 @@
 - Comprobar unicidad de plan/cosecha, eliminaciones y checks restantes.
 - Probar persistencia sin red de entidades agrícolas además del perfil.
 - Ejecutar prueba guiada de usabilidad con participantes e instrumento aprobado.
-- Obtener capturas reales EV-02..EV-12. EV-01 y EV-13 ya cuentan con capturas reales.
+- Completar capturas reales EV-02..EV-07 y EV-09..EV-12. EV-01, EV-08 y EV-13 cuentan con capturas reales.
 
 Los comandos y resultados están en `RESULTADOS.md`. Los pendientes no se cuentan como ejecutados.

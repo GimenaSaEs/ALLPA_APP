@@ -4,7 +4,7 @@ Revisión: 2026-11-17. Se contrastaron los requisitos RF-01..RF-06/RNF-01..RNF-0
 
 ## Dictamen
 
-La documentación anterior estaba desactualizada: indicaba que no había dispositivo, que la app no se había iniciado en Android y que todas las capturas estaban pendientes. La evidencia actual contradice esas tres afirmaciones. La app ALLPA se instaló y abrió en un Samsung SM-A155M Android 14; OFF-01 confirmó que el perfil sintético persiste tras reiniciar la app sin Wi-Fi ni datos móviles. Solo EV-01 y EV-13 tienen capturas reales en esta revisión.
+La documentación anterior estaba desactualizada: indicaba que no había dispositivo, que la app no se había iniciado en Android y que todas las capturas estaban pendientes. La evidencia actual contradice esas tres afirmaciones. La app ALLPA se instaló y abrió en un Samsung SM-A155M Android 14; OFF-01 confirmó que el perfil sintético persiste tras reiniciar la app sin Wi-Fi ni datos móviles. También se abrió el formulario de cultivo y su selector de fecha en español. Las capturas reales disponibles son EV-01, EV-08 y EV-13.
 
 La verificación no cubre todas las operaciones funcionales ni la aceptación de campo. Las demás capacidades que se describen abajo se contrastaron con rutas, formularios, provider y repositorios, y con pruebas automatizadas de alcance limitado.
 
@@ -12,7 +12,7 @@ La verificación no cubre todas las operaciones funcionales ni la aceptación de
 |---|---|---|
 | RF-01 Perfil | Bienvenida, formulario y guardado vía `AllpaProvider`/repositorio | Widget abre el formulario; guardado y persistencia del perfil comprobados en Android; EV-01/13 |
 | RF-02 Terrenos | Lista, alta, detalle y edición conectados a provider/repositorio | FFI comprueba FK y área > 0; captura y recorrido CRUD completo pendientes |
-| RF-03 Cultivo/siembra | Lista, formulario, detalle y plan enlazados | Navegación a cultivos cubierta por widget; CRUD completo y EV-03/07/08 pendientes |
+| RF-03 Cultivo/siembra | Lista, formulario, detalle y plan enlazados | Navegación a cultivos y localización de fecha probadas; EV-08; CRUD completo y EV-03/07 pendientes |
 | RF-04 Labores/insumos | Formularios accesibles desde detalle del cultivo | Código conectado; captura y recorrido CRUD Android pendientes |
 | RF-05 Bitácora | Consulta consolidada, filtros y copia CSV | Pantalla/código presentes; EV-05/11 y comprobación funcional con registros pendientes |
 | RF-06 Cosecha | Formulario, repositorio y cálculos enlazados | Código presente; recorrido CRUD y EV-06 pendientes |
@@ -23,9 +23,9 @@ La verificación no cubre todas las operaciones funcionales ni la aceptación de
 ## Comprobaciones ejecutadas
 
 - `flutter analyze`: `No issues found!`.
-- `flutter test --reporter expanded`: 5 pruebas pasaron (2 SQLite FFI, 3 widget).
+- `flutter test --reporter expanded`: 6 pruebas pasaron (2 SQLite FFI, 4 widget, incluida localización de fecha).
 - `flutter build apk --debug`: correcto; `build/app/outputs/flutter-apk/app-debug.apk`.
 - Android: instalación, inicio y reinicio sin red observados en Samsung SM-A155M Android 14.
 - `flutter build windows --debug`: no disponible en este equipo por symlink support deshabilitado.
 
-Las capturas EV-01 y EV-13 son evidencia real de bienvenida y persistencia del perfil, respectivamente. EV-02..EV-12 permanecen pendientes. Consultar `RESULTADOS.md` para el alcance preciso de cada comprobación.
+Las capturas EV-01, EV-08 y EV-13 son evidencia real de bienvenida, formulario de cultivo y persistencia del perfil, respectivamente. EV-02..EV-07 y EV-09..EV-12 permanecen pendientes. EV-08 no prueba guardado de un cultivo. Consultar `RESULTADOS.md` para el alcance preciso de cada comprobación.
