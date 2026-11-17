@@ -260,7 +260,9 @@ class BitacoraServicio {
       throw ErrorDeRegla('PARCELA_INVALIDA', 'Escriba el nombre de la parcela.');
     }
     final crudo = datos['hectareas_disponibles'];
-    final numero = crudo is num ? crudo.toDouble() : double.tryParse('${crudo ?? ''}');
+    final numero = crudo is num
+        ? crudo.toDouble()
+        : double.tryParse('${crudo ?? ''}'.trim().replaceAll(',', '.'));
     if (numero == null) {
       throw ErrorDeRegla('SUPERFICIE_INVALIDA', 'Las hectáreas disponibles deben ser un número.');
     }
@@ -273,7 +275,7 @@ class BitacoraServicio {
       hectareasDisponibles: hectareas,
       plan: validarPlan(datos, hectareas),
       origen: haySenal ? 'en_linea' : 'sin_senal',
-      sincronizado: haySenal,
+      sincronizado: false,
     );
   }
 
@@ -286,9 +288,10 @@ class BitacoraServicio {
   }
 
   void _marcarOrigen(Campana campana) {
+    // Todo cambio debe incorporarse al siguiente respaldo, con o sin señal.
+    campana.sincronizado = false;
     if (!haySenal) {
       campana.origen = 'sin_senal';
-      campana.sincronizado = false;
     }
   }
 

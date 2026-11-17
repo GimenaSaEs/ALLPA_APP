@@ -181,7 +181,7 @@ Future<void> elegirFecha(
 ) async {
   final elegida = await showDatePicker(
     context: context,
-    initialDate: actual ?? DateTime(2027, 11, 15),
+    initialDate: actual ?? DateTime.now(),
     firstDate: DateTime(2024),
     lastDate: DateTime(2032),
     builder: (context, child) {

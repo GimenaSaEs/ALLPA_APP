@@ -63,7 +63,7 @@ String? validarCultivo(Object? clave) {
 }
 
 double validarSuperficieDisponible(double hectareas) {
-  if (hectareas <= 0) {
+  if (!hectareas.isFinite || hectareas <= 0) {
     throw ErrorDeRegla(
       'SUPERFICIE_INVALIDA',
       'Las hectáreas disponibles deben ser mayores que cero.',
@@ -79,7 +79,7 @@ double validarSuperficieDisponible(double hectareas) {
 }
 
 double validarSuperficieUsada(double usada, double disponible, String etiqueta) {
-  if (usada <= 0) {
+  if (!usada.isFinite || !disponible.isFinite || disponible <= 0 || usada <= 0) {
     throw ErrorDeRegla(
       'SUPERFICIE_INVALIDA',
       'Las hectáreas de $etiqueta deben ser mayores que cero.',
@@ -177,7 +177,7 @@ PlanCampana validarPlan(Map<String, dynamic> datos, double hectareasDisponibles)
 
 Siembra validarSiembra(Map<String, dynamic> datos, double hectareasDisponibles) {
   final fecha = _fechaObligatoria(datos['fecha_real'], 'la fecha real de siembra');
-  if (!datos.containsKey('individual')) {
+  if (datos['individual'] is! bool) {
     throw ErrorDeRegla('SIEMBRA_INVALIDA', 'Indique si la siembra es individual.');
   }
   return Siembra(
@@ -238,8 +238,10 @@ double _redondear(double valor, [int decimales = 2]) {
 }
 
 double _noNegativo(Object? valor, String etiqueta) {
-  final numero = valor is num ? valor.toDouble() : double.tryParse(valor.toString());
-  if (numero == null) {
+  final numero = valor is num
+      ? valor.toDouble()
+      : double.tryParse(valor.toString().trim().replaceAll(',', '.'));
+  if (numero == null || !numero.isFinite) {
     throw ErrorDeRegla('NUMERO_INVALIDO', '$etiqueta debe ser un número.');
   }
   if (numero < 0) {

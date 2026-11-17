@@ -2,6 +2,7 @@ import 'package:allpa/dominio/cultivos.dart';
 import 'package:allpa/dominio/modelos.dart';
 import 'package:allpa/servicios/bitacora_servicio.dart';
 import 'package:allpa/ui/comun.dart';
+import 'package:allpa/ui/fila_calidad.dart';
 import 'package:allpa/ui/tema.dart';
 import 'package:flutter/material.dart';
 
@@ -128,17 +129,17 @@ class _PantallaCalidadState extends State<PantallaCalidad> {
                           ],
                         ),
                         const SizedBox(height: 12),
-                        _FilaCalidad(
+                        FilaCalidad(
                           titulo: 'Cobertura de funciones',
                           valor: '${ficha.coberturaFuncionesPct} %',
                           esDestacado: true,
                           colorDestacado: ColoresAllpa.verdeMedio,
                         ),
-                        _FilaCalidad(
+                        FilaCalidad(
                           titulo: 'Funciones cubiertas',
                           valor: _funciones(ficha.funcionesCubiertas),
                         ),
-                        _FilaCalidad(
+                        FilaCalidad(
                           titulo: 'Registros de parcela',
                           valor: '${ficha.registrosParcelaGuardados}',
                         ),
@@ -166,7 +167,7 @@ class _PantallaCalidadState extends State<PantallaCalidad> {
                           ],
                         ),
                         const SizedBox(height: 12),
-                        _FilaCalidad(
+                        FilaCalidad(
                           titulo: 'Tareas de bitácora',
                           valor: ficha.tareasBitacoraCompletadasPct == null
                               ? 'sin intentos'
@@ -174,7 +175,7 @@ class _PantallaCalidadState extends State<PantallaCalidad> {
                           esDestacado: ficha.tareasBitacoraCompletadasPct != null,
                           colorDestacado: ColoresAllpa.verdeMedio,
                         ),
-                        _FilaCalidad(
+                        FilaCalidad(
                           titulo: 'Tiempo de registro de una labor',
                           valor: ficha.tiempoRegistroLaborSegundos == null
                               ? 'sin medición'
@@ -206,7 +207,7 @@ class _PantallaCalidadState extends State<PantallaCalidad> {
                           ],
                         ),
                         const SizedBox(height: 12),
-                        _FilaCalidad(
+                        FilaCalidad(
                           titulo: 'Disponibilidad sin señal',
                           valor: ficha.disponibilidadSinSenalPct == null
                               ? 'sin intentos sin señal'
@@ -214,13 +215,13 @@ class _PantallaCalidadState extends State<PantallaCalidad> {
                           esDestacado: ficha.disponibilidadSinSenalPct != null,
                           colorDestacado: ColoresAllpa.verdeMedio,
                         ),
-                        _FilaCalidad(
+                        FilaCalidad(
                           titulo: 'Fallos de operación',
                           valor: '${ficha.fallosOperacion}',
                           esDestacado: true,
                           colorDestacado: ficha.fallosOperacion == 0 ? ColoresAllpa.verdeMedio : ColoresAllpa.tierraBarro,
                         ),
-                        _FilaCalidad(
+                        FilaCalidad(
                           titulo: 'Rechazos de regla',
                           valor: '${ficha.rechazosDeRegla}',
                         ),
@@ -326,56 +327,5 @@ class _PantallaCalidadState extends State<PantallaCalidad> {
         if (cubiertas.contains(funcion)) nombres[funcion] ?? funcion,
     ];
     return orden.join(', ');
-  }
-}
-
-class _FilaCalidad extends StatelessWidget {
-  final String titulo;
-  final String valor;
-  final bool esDestacado;
-  final Color? colorDestacado;
-
-  const _FilaCalidad({
-    required this.titulo,
-    required this.valor,
-    this.esDestacado = false,
-    this.colorDestacado,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Text(
-              titulo,
-              style: const TextStyle(fontSize: 13.5, color: ColoresAllpa.textoPrincipal),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Container(
-            padding: esDestacado ? const EdgeInsets.symmetric(horizontal: 8, vertical: 3) : EdgeInsets.zero,
-            decoration: esDestacado
-                ? BoxDecoration(
-                    color: (colorDestacado ?? ColoresAllpa.verdeMedio).withOpacity(0.12),
-                    borderRadius: BorderRadius.circular(6),
-                  )
-                : null,
-            child: Text(
-              valor,
-              textAlign: TextAlign.right,
-              style: TextStyle(
-                fontSize: esDestacado ? 14 : 13.5,
-                fontWeight: FontWeight.w700,
-                color: esDestacado ? (colorDestacado ?? ColoresAllpa.verdeBosque) : ColoresAllpa.textoPrincipal,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }

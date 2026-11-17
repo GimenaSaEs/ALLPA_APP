@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:allpa/dominio/modelos.dart';
+import 'package:allpa/servicios/compartir_respaldo.dart';
 import 'package:allpa/dominio/reglas.dart';
 import 'package:allpa/servicios/bitacora_servicio.dart';
 import 'package:allpa/ui/comun.dart';
@@ -157,7 +160,7 @@ class _PantallaInicioState extends State<PantallaInicio> {
                             child: Text(
                               totalPendientes == 0
                                   ? 'Todos los registros están respaldados'
-                                  : '$totalPendientes chacra(s) pendiente(s) de respaldo JSON',
+                                  : '$totalPendientes chacra(s) pendiente(s) de respaldo local',
                               style: TextStyle(
                                 fontSize: 12,
                                 color: totalPendientes == 0 ? ColoresAllpa.verdeMedio : ColoresAllpa.tierraBarro,
@@ -311,8 +314,21 @@ class _PantallaInicioState extends State<PantallaInicio> {
                           child: CircularProgressIndicator(strokeWidth: 2, color: ColoresAllpa.verdeBosque),
                         )
                       : const Icon(Icons.cloud_upload_outlined, size: 20),
-                  label: const Text('Enviar respaldo'),
+                  label: const Text('Crear respaldo local'),
                 ),
+                if (Platform.isAndroid) ...[
+                  const SizedBox(height: 10),
+                  FilledButton.icon(
+                    onPressed: _sincronizando ? null : _compartir,
+                    icon: const Icon(Icons.share_outlined),
+                    label: const Text('Compartir respaldo'),
+                  ),
+                  const SizedBox(height: 6),
+                  const Text(
+                    'Comparte todas las unidades guardadas en este celular. Elige una aplicación y confirma el envío allí.',
+                    style: TextStyle(fontSize: 12),
+                  ),
+                ],
                 const SizedBox(height: 10),
                 OutlinedButton.icon(
                   onPressed: () {
@@ -351,8 +367,26 @@ class _PantallaInicioState extends State<PantallaInicio> {
     if (!mounted) return;
     setState(() => _sincronizando = false);
     if (enviadas == null) return;
-    avisar(context, 'Respaldo listo. Campañas enviadas: $enviadas.');
+    avisar(context, 'Respaldo local creado. Campañas actualizadas: $enviadas.');
     await _cargar();
+  }
+
+  Future<void> _compartir() async {
+    setState(() => _sincronizando = true);
+    try {
+      final abierto = await guardar(context, () async {
+        await widget.servicio.sincronizar();
+        await compartirRespaldo(widget.servicio.rutaRespaldo);
+        return true;
+      });
+      if (!mounted) return;
+      if (abierto == true) {
+        avisar(context, 'Respaldo preparado. Completa el envío en la aplicación que elijas.');
+      }
+      await _cargar();
+    } finally {
+      if (mounted) setState(() => _sincronizando = false);
+    }
   }
 }
 
@@ -491,16 +525,15 @@ class _TarjetaChacra extends StatelessWidget {
               const Divider(color: ColoresAllpa.divisor, height: 1),
               const SizedBox(height: 10),
               // Progreso de funciones básicas
-              Row(
+              Wrap(
+                spacing: 6,
+                runSpacing: 8,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   _PasoIndicador(etiqueta: 'Plan', activo: planEscrito(campana.plan)),
-                  const SizedBox(width: 6),
                   _PasoIndicador(etiqueta: 'Siembra', activo: tieneSiembra),
-                  const SizedBox(width: 6),
                   _PasoIndicador(etiqueta: 'Labores (${campana.labores.length})', activo: campana.labores.isNotEmpty),
-                  const SizedBox(width: 6),
                   _PasoIndicador(etiqueta: 'Cosecha', activo: tieneCosecha),
-                  const Spacer(),
                   Icon(
                     campana.sincronizado ? Icons.check_circle_rounded : Icons.pending_rounded,
                     size: 14,
@@ -508,7 +541,7 @@ class _TarjetaChacra extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    campana.sincronizado ? 'Sincronizado' : 'Sin señal',
+                    campana.sincronizado ? 'Respaldada' : 'Pendiente',
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,

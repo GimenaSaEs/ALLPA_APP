@@ -1,5 +1,19 @@
 # Allpa — Bitácora Agrícola para Illpe
 
+## Actualización 1.0.3
+
+El código actual incorpora validación de números no finitos y coma decimal, seguimiento correcto del respaldo, icono propio, menú de Android para compartir el JSON y corrección del texto comprimido en Pruebas del aplicativo (incidencia M09).
+
+- **Instalador Android actualizado:** descargar `ALLPA_MEJORADO_1.0.3.apk` desde [la versión de pruebas 1.0.3](https://github.com/GimenaSaEs/ALLPA_APP/releases/tag/v1.0.3). Los binarios `allpa.apk` y `allpa.exe` conservados en la raíz corresponden a la entrega anterior.
+- **Verificación actual:** 42 pruebas automatizadas aprobadas; análisis sin errores ni advertencias y con 34 avisos informativos. Los resultados están en [documentacion/evidencias](documentacion/evidencias).
+- **Documentos:** [informe de pruebas](documentacion/INFORME_PRUEBAS_ALLPA.docx) y [análisis descriptivo](documentacion/ANALISIS_RESULTADOS_ALLPA.docx). Esos Word documentan la versión 1.0.2 y sus 39 pruebas; [el registro M09](INCIDENCIA_M09_1.0.3.md) complementa la revisión para 1.0.3. Falta confirmar la corrección visual en el teléfono del usuario.
+- **Respaldo:** se crea un archivo JSON local con todas las unidades del dispositivo. Compartir respaldo abre el selector de Android; el usuario elige el destino y confirma allí. No hay entrega automática, restauración desde JSON ni detección real de conectividad. Con señal / Sin señal es un modo manual de prueba.
+- **Caso UP-ILL-001:** es el ejemplo precargado para verificar cálculos. Los 45 segundos no son una medición realizada con un productor. La cobertura de siete funciones no equivale a cobertura de código.
+
+Entorno verificado: Flutter 3.44.0 y Dart 3.12.0. En Windows, usar una ruta del SDK sin espacios para evitar problemas al construir los componentes nativos de SQLite. El APK conserva la firma de depuración del proyecto y se distribuye para pruebas. Instalar como actualización; no desinstalar una instalación con datos importantes si aparece un conflicto de firma.
+
+La documentación de la entrega original se conserva a continuación como referencia histórica; sus cifras de 30 pruebas y sus descripciones de sincronización deben leerse junto con las precisiones de esta actualización.
+
 ## Propósito
 
 Allpa registra la campaña agrícola de una unidad productiva en el centro poblado de Illpe, Pachamarca, Churcampa, Huancavelica. El programa se desarrolló e implementó conforme a los requisitos, reglas de negocio, indicadores agronómicos y criterios de aceptación descritos en los Capítulos III, IV y V de la tesis (*CCENTE-SALAZAR-ZEVALLOS*). El almacenamiento principal se conserva íntegramente en SQLite en el dispositivo móvil y funciona al 100 % sin conexión a internet.

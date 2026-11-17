@@ -1,4 +1,3 @@
-import 'package:allpa/dominio/cultivos.dart';
 import 'package:allpa/dominio/modelos.dart';
 import 'package:allpa/dominio/reglas.dart';
 import 'package:allpa/servicios/bitacora_servicio.dart';
@@ -132,8 +131,8 @@ class _PantallaDetalleState extends State<PantallaDetalle> {
                             Expanded(
                               child: Text(
                                 campana.sincronizado
-                                    ? 'Origen: ${campana.origen} · Respaldo sincronizado'
-                                    : 'Guardada sin señal · pendiente de respaldo en SQLite',
+                                    ? 'Guardada en el dispositivo · respaldo local creado'
+                                    : 'Guardada en el dispositivo · pendiente de respaldo local',
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
