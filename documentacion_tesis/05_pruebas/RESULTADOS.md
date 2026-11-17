@@ -11,6 +11,7 @@ Fecha de ejecución: 2026-11-17 (America/Lima). Se anotan únicamente salidas ob
 | `flutter test --reporter compact` | Correcto: 3 pruebas pasaron (2 de esquema SQLite FFI y 1 smoke test del contador Flutter). El widget test solo valida la plantilla. |
 | `flutter test test/database_schema_test.dart` | Correcto: 2 pruebas pasaron. Verifican siete tablas, `PRAGMA foreign_keys=1`, persistencia vinculada con datos sintéticos y rechazo de área cero. |
 | `flutter build apk --debug` | Correcto. Generó `build/app/outputs/flutter-apk/app-debug.apk` (debug). El binario ejecuta el `main.dart` de contador, no los flujos ALLPA. |
+| `flutter build windows --debug` | Falló antes de compilar: Windows requiere habilitar Developer Mode para admitir symlinks. |
 | Instalación Android / modo avión / relanzamiento | No ejecutada: `flutter devices` detectó Windows y navegadores, sin emulador ni dispositivo Android. Por tanto no se afirma funcionamiento offline del aplicativo Android. |
 
 ## Casos de prueba funcionales propuestos

@@ -10,3 +10,4 @@
 - Las release usan firma debug en `android/app/build.gradle.kts`; no es configuración de distribución pública.
 - No se encontraron capturas de ejecución. Solo se reservan EV-01..EV-13; no se fabrican imágenes.
 - Hay funciones de datos de bitácora, indicadores, exportación CSV y cálculos. Su presencia no prueba disponibilidad desde la interfaz.
+- Revisión cruzada de documentación/código y prueba de build Windows: documentacion_tesis/05_pruebas/REVISION_DOCUMENTACION_VS_CODIGO.md; compilación Windows bloqueada por symlink support deshabilitado. La suite Flutter volvió a pasar 3 pruebas y el análisis reportó 106 hallazgos.
