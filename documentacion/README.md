@@ -4,5 +4,6 @@
 - `ANALISIS_RESULTADOS_ALLPA.docx`: descripción de los indicadores del caso de referencia UP-ILL-001. No presenta mediciones de campo nuevas ni resultados inferenciales de SPSS.
 - `../INCIDENCIA_M09_1.0.3.md`: registro del defecto observado en el celular, su corrección y la comprobación manual pendiente. Complementa los Word sin alterar los resultados de la versión anterior.
 - `evidencias/`: registros finales de ALLPA 1.0.3. Se aprobaron 42 pruebas; el analizador no encontró errores ni advertencias y reportó 34 avisos informativos; el APK compiló correctamente.
+- [Capturas del código](evidencias/capturas/README.md): cuatro imágenes originales de VS Code con configuración SQLite y validaciones de superficies y cosecha.
 
 Los originales de tesis y el documento de ejemplo de otro proyecto no forman parte de esta carpeta. Las pruebas manuales requieren resultados y capturas antes de declararlas aprobadas.
