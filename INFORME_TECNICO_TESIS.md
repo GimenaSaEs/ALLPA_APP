@@ -24,10 +24,12 @@ El esquema y las relaciones documentados se contrastaron con `lib/core/database/
 ## Verificación y resultados
 
 - `flutter analyze`: `No issues found!`.
-- `flutter test --reporter expanded`: seis pruebas automáticas pasan (dos de esquema SQLite FFI y cuatro widget; incluye formato y selector de fecha en español).
+- `flutter test --reporter expanded`: siete pruebas automáticas pasan (dos de esquema SQLite FFI y cinco widget; incluye localización de fecha y diseño adaptable).
 - `flutter build apk --debug`: exitoso; artefacto en `build/app/outputs/flutter-apk/app-debug.apk`.
 - Instalación e inicio observados en Samsung SM-A155M Android 14; aparece ALLPA y no la pantalla demo de Flutter.
+- El icono Android utiliza el logo ALLPA entregado como referencia. `assets/images/allpa_logo.png` conserva la imagen base y `android/app/src/main/res/mipmap-*` sus tamaños de launcher.
 - El formulario “Nuevo Cultivo” y el calendario de fecha se abrieron correctamente en español, sin `LocaleDataException`; evidencia EV-08.
+- El detalle del terreno adapta indicadores y encabezado al ancho del teléfono, sin el desbordamiento de “Agregar cultivo”. Una prueba widget replica ancho 360 y escala de texto 1.4; no se guardó captura Android porque el dispositivo mostraba datos locales preexistentes.
 - OFF-01 pasó para persistencia del perfil sintético: con Wi-Fi/datos apagados se forzó cierre y se relanzó la aplicación; el panel recuperó el perfil. Evidencia EV-13.
 - `flutter build windows --debug` no se completó porque en este equipo está deshabilitado el soporte de symlinks requerido por Flutter.
 

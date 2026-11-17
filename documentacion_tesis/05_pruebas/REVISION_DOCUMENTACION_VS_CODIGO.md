@@ -4,7 +4,7 @@ Revisión: 2026-11-17. Se contrastaron los requisitos RF-01..RF-06/RNF-01..RNF-0
 
 ## Dictamen
 
-La documentación anterior estaba desactualizada: indicaba que no había dispositivo, que la app no se había iniciado en Android y que todas las capturas estaban pendientes. La evidencia actual contradice esas tres afirmaciones. La app ALLPA se instaló y abrió en un Samsung SM-A155M Android 14; OFF-01 confirmó que el perfil sintético persiste tras reiniciar la app sin Wi-Fi ni datos móviles. También se abrió el formulario de cultivo y su selector de fecha en español. Las capturas reales disponibles son EV-01, EV-08 y EV-13.
+La documentación anterior estaba desactualizada: indicaba que no había dispositivo, que la app no se había iniciado en Android y que todas las capturas estaban pendientes. La evidencia actual contradice esas tres afirmaciones. La app ALLPA se instaló y abrió en un Samsung SM-A155M Android 14; OFF-01 confirmó que el perfil sintético persiste tras reiniciar la app sin Wi-Fi ni datos móviles. También se abrió el formulario de cultivo y su selector de fecha en español. El detalle de terreno se reordenó para evitar el overflow en pantallas estrechas. Las capturas reales disponibles son EV-01, EV-08 y EV-13.
 
 La verificación no cubre todas las operaciones funcionales ni la aceptación de campo. Las demás capacidades que se describen abajo se contrastaron con rutas, formularios, provider y repositorios, y con pruebas automatizadas de alcance limitado.
 
@@ -23,7 +23,7 @@ La verificación no cubre todas las operaciones funcionales ni la aceptación de
 ## Comprobaciones ejecutadas
 
 - `flutter analyze`: `No issues found!`.
-- `flutter test --reporter expanded`: 6 pruebas pasaron (2 SQLite FFI, 4 widget, incluida localización de fecha).
+- `flutter test --reporter expanded`: 7 pruebas pasaron (2 SQLite FFI, 5 widget, incluida localización de fecha y diseño adaptable).
 - `flutter build apk --debug`: correcto; `build/app/outputs/flutter-apk/app-debug.apk`.
 - Android: instalación, inicio y reinicio sin red observados en Samsung SM-A155M Android 14.
 - `flutter build windows --debug`: no disponible en este equipo por symlink support deshabilitado.

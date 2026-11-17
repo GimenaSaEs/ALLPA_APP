@@ -184,27 +184,57 @@ class TerrenoDetailScreen extends StatelessWidget {
                   const SizedBox(height: 16),
                   const Divider(thickness: 1),
                   const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      _MetricBox(
-                        title: 'Superficie Total',
-                        value: '${terreno.areaHa.toStringAsFixed(2)} ha',
-                        color: AppColors.primary,
-                      ),
-                      _MetricBox(
-                        title: 'Área Sembrada',
-                        value:
-                            '${terreno.areaSembradaTotal.toStringAsFixed(2)} ha',
-                        color: AppColors.tertiary,
-                      ),
-                      _MetricBox(
-                        title: 'Área Libre',
-                        value:
-                            '${(terreno.areaHa - terreno.areaSembradaTotal).clamp(0.0, terreno.areaHa).toStringAsFixed(2)} ha',
-                        color: AppColors.secondary,
-                      ),
-                    ],
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      final freeArea =
+                          (terreno.areaHa - terreno.areaSembradaTotal)
+                              .clamp(0.0, terreno.areaHa)
+                              .toStringAsFixed(2);
+                      if (constraints.maxWidth < 520) {
+                        return Column(
+                          children: [
+                            _MetricRow(
+                              title: 'Superficie Total',
+                              value: '${terreno.areaHa.toStringAsFixed(2)} ha',
+                              color: AppColors.primary,
+                            ),
+                            _MetricRow(
+                              title: 'Área Sembrada',
+                              value:
+                                  '${terreno.areaSembradaTotal.toStringAsFixed(2)} ha',
+                              color: AppColors.tertiary,
+                            ),
+                            _MetricRow(
+                              title: 'Área Libre',
+                              value: '$freeArea ha',
+                              color: AppColors.secondary,
+                            ),
+                          ],
+                        );
+                      }
+
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          _MetricBox(
+                            title: 'Superficie Total',
+                            value: '${terreno.areaHa.toStringAsFixed(2)} ha',
+                            color: AppColors.primary,
+                          ),
+                          _MetricBox(
+                            title: 'Área Sembrada',
+                            value:
+                                '${terreno.areaSembradaTotal.toStringAsFixed(2)} ha',
+                            color: AppColors.tertiary,
+                          ),
+                          _MetricBox(
+                            title: 'Área Libre',
+                            value: '$freeArea ha',
+                            color: AppColors.secondary,
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ],
               ),
@@ -212,19 +242,9 @@ class TerrenoDetailScreen extends StatelessWidget {
             const SizedBox(height: 24),
 
             // Sección de cultivos
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'CULTIVOS EN ESTE TERRENO',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.secondary,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-                TextButton.icon(
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final addButton = TextButton.icon(
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -235,8 +255,34 @@ class TerrenoDetailScreen extends StatelessWidget {
                   },
                   icon: const Icon(Icons.add, size: 18),
                   label: const Text('AGREGAR CULTIVO'),
-                ),
-              ],
+                );
+                const heading = Text(
+                  'CULTIVOS EN ESTE TERRENO',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.secondary,
+                    letterSpacing: 0.5,
+                  ),
+                );
+
+                if (constraints.maxWidth < 520) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      heading,
+                      Align(alignment: Alignment.centerRight, child: addButton),
+                    ],
+                  );
+                }
+
+                return Row(
+                  children: [
+                    const Expanded(child: heading),
+                    addButton,
+                  ],
+                );
+              },
             ),
             const SizedBox(height: 10),
 
@@ -374,6 +420,44 @@ class _MetricBox extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _MetricRow extends StatelessWidget {
+  final String title;
+  final String value;
+  final Color color;
+
+  const _MetricRow({
+    required this.title,
+    required this.value,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              title,
+              style: const TextStyle(fontSize: 14, color: AppColors.textMuted),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

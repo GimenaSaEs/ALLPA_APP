@@ -33,6 +33,7 @@ Para elegir un dispositivo: `flutter devices` y `flutter run -d <device-id>`.
 - `lib/presentation/providers`: estado compartido (`AllpaProvider`).
 - `lib/presentation/screens` y `widgets`: interfaz.
 - `android/`: configuración Gradle y manifiesto Android.
+- `assets/images/allpa_logo.png`: logo ALLPA de referencia; el icono Android se genera en los recursos mipmap.
 
 La app usa `sqflite` sin backend ni sincronización remota. Esquema y relaciones: [documentación SQLite](documentacion_tesis/02_base_datos/ESQUEMA_SQLITE.md). La carpeta [documentacion_tesis](documentacion_tesis/) contiene arquitectura, diagramas, capturas verificadas/pendientes, pruebas, trazabilidad y manuales.
 
@@ -44,7 +45,7 @@ flutter test --reporter expanded
 flutter build apk --debug
 ```
 
-En la verificación del 17-11-2026, `flutter analyze` no reportó problemas, pasaron 6 pruebas automatizadas y el APK debug se generó correctamente en `build/app/outputs/flutter-apk/app-debug.apk`. También se instaló y abrió en Samsung SM-A155M Android 14; se comprobó el formulario de cultivo y el selector de fecha en español. OFF-01 verificó que un perfil sintético reaparece tras forzar cierre y relanzar con Wi-Fi/datos móviles apagados. Estas comprobaciones no acreditan el CRUD de todas las entidades. Resultados y límites: [RESULTADOS.md](documentacion_tesis/05_pruebas/RESULTADOS.md).
+En la verificación del 17-11-2026, `flutter analyze` no reportó problemas, pasaron 7 pruebas automatizadas y el APK debug se generó correctamente en `build/app/outputs/flutter-apk/app-debug.apk`. También se instaló y abrió en Samsung SM-A155M Android 14; se comprobó el formulario de cultivo y el selector de fecha en español, y el detalle de terreno se adapta a la pantalla sin overflow. OFF-01 verificó que un perfil sintético reaparece tras forzar cierre y relanzar con Wi-Fi/datos móviles apagados. Estas comprobaciones no acreditan el CRUD de todas las entidades. Resultados y límites: [RESULTADOS.md](documentacion_tesis/05_pruebas/RESULTADOS.md).
 
 El APK es debug y no corresponde a una distribución release firmada. Ruta: `build/app/outputs/flutter-apk/app-debug.apk` (el directorio `build/` está excluido por `.gitignore`). Para regenerar: `flutter build apk --debug`.
 
@@ -57,8 +58,7 @@ No incluir bases reales, contraseñas, claves privadas ni archivos de firma. `.g
 El repositorio local está en la rama `main`; no se ha publicado. Cree un repositorio vacío en GitHub, configure autenticación y ejecute:
 
 ```powershell
-git remote add origin https://github.com/USUARIO/REPOSITORIO.git
-git push -u origin main
+git push origin main
 ```
 
 Antes de subir, revise `git status` y confirme que no haya datos personales o secretos.
