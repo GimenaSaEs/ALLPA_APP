@@ -13,13 +13,19 @@ class TerrenoDetailScreen extends StatelessWidget {
 
   Future<void> _confirmarEliminacion(BuildContext context) async {
     final prov = context.read<AllpaProvider>();
-    final cultivos = prov.cultivos.where((c) => c.terrenoId == terrenoId).toList();
+    final cultivos = prov.cultivos
+        .where((c) => c.terrenoId == terrenoId)
+        .toList();
 
     if (cultivos.isNotEmpty) {
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-          icon: const Icon(Icons.warning_amber_rounded, color: AppColors.warning, size: 48),
+          icon: const Icon(
+            Icons.warning_amber_rounded,
+            color: AppColors.warning,
+            size: 48,
+          ),
           title: const Text('No se puede eliminar'),
           content: Text(
             'El terreno tiene ${cultivos.length} cultivo(s) asociado(s). Por regla de integridad de datos, primero debe gestionar o eliminar dichos cultivos.',
@@ -91,7 +97,9 @@ class TerrenoDetailScreen extends StatelessWidget {
       );
     }
 
-    final cultivos = prov.cultivos.where((c) => c.terrenoId == terrenoId).toList();
+    final cultivos = prov.cultivos
+        .where((c) => c.terrenoId == terrenoId)
+        .toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -140,7 +148,11 @@ class TerrenoDetailScreen extends StatelessWidget {
                           color: AppColors.primaryContainer,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Icon(Icons.landscape, size: 32, color: AppColors.primaryDark),
+                        child: const Icon(
+                          Icons.landscape,
+                          size: 32,
+                          color: AppColors.primaryDark,
+                        ),
                       ),
                       const SizedBox(width: 14),
                       Expanded(
@@ -157,8 +169,12 @@ class TerrenoDetailScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              terreno.ubicacion ?? 'Illpe, sector sin especificar',
-                              style: const TextStyle(fontSize: 14, color: AppColors.textSecondary),
+                              terreno.ubicacion ??
+                                  'Illpe, sector sin especificar',
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: AppColors.textSecondary,
+                              ),
                             ),
                           ],
                         ),
@@ -178,12 +194,14 @@ class TerrenoDetailScreen extends StatelessWidget {
                       ),
                       _MetricBox(
                         title: 'Área Sembrada',
-                        value: '${terreno.areaSembradaTotal.toStringAsFixed(2)} ha',
+                        value:
+                            '${terreno.areaSembradaTotal.toStringAsFixed(2)} ha',
                         color: AppColors.tertiary,
                       ),
                       _MetricBox(
                         title: 'Área Libre',
-                        value: '${(terreno.areaHa - terreno.areaSembradaTotal).clamp(0.0, terreno.areaHa).toStringAsFixed(2)} ha',
+                        value:
+                            '${(terreno.areaHa - terreno.areaSembradaTotal).clamp(0.0, terreno.areaHa).toStringAsFixed(2)} ha',
                         color: AppColors.secondary,
                       ),
                     ],
@@ -233,16 +251,26 @@ class TerrenoDetailScreen extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    const Icon(Icons.grass, size: 48, color: AppColors.outlineVariant),
+                    const Icon(
+                      Icons.grass,
+                      size: 48,
+                      color: AppColors.outlineVariant,
+                    ),
                     const SizedBox(height: 10),
                     const Text(
                       'No hay cultivos sembrados en este terreno',
-                      style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     const Text(
                       'Puedes registrar papa, maíz, cebada, trigo u otro cultivo.',
-                      style: TextStyle(fontSize: 13, color: AppColors.textMuted),
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: AppColors.textMuted,
+                      ),
                     ),
                     const SizedBox(height: 14),
                     ElevatedButton(
@@ -250,7 +278,8 @@ class TerrenoDetailScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => CultivoFormScreen(terrenoId: terrenoId),
+                            builder: (_) =>
+                                CultivoFormScreen(terrenoId: terrenoId),
                           ),
                         );
                       },
@@ -269,18 +298,27 @@ class TerrenoDetailScreen extends StatelessWidget {
                   return Card(
                     margin: const EdgeInsets.only(bottom: 12),
                     child: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
                       leading: Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
                           color: AppColors.primaryContainer,
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: const Icon(Icons.eco, color: AppColors.primaryDark),
+                        child: const Icon(
+                          Icons.eco,
+                          color: AppColors.primaryDark,
+                        ),
                       ),
                       title: Text(
                         '${c.especie} (${c.variedad ?? "Variedad común"})',
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
                       subtitle: Text(
                         'Superficie: ${c.areaSembradaHa} ha • Estado: ${c.estado}',
@@ -291,7 +329,8 @@ class TerrenoDetailScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => CultivoDetailScreen(cultivoId: c.id!),
+                            builder: (_) =>
+                                CultivoDetailScreen(cultivoId: c.id!),
                           ),
                         );
                       },
@@ -311,17 +350,28 @@ class _MetricBox extends StatelessWidget {
   final String value;
   final Color color;
 
-  const _MetricBox({required this.title, required this.value, required this.color});
+  const _MetricBox({
+    required this.title,
+    required this.value,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(title, style: const TextStyle(fontSize: 12, color: AppColors.textMuted)),
+        Text(
+          title,
+          style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
+        ),
         const SizedBox(height: 4),
         Text(
           value,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: color),
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
         ),
       ],
     );

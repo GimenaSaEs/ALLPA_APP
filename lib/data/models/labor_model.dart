@@ -45,7 +45,8 @@ class LaborModel {
       fecha: map['fecha'] as String? ?? '',
       jornales: (map['jornales'] as num?)?.toDouble() ?? 0.0,
       nota: map['nota'] as String?,
-      createdAt: map['created_at'] as String? ?? DateTime.now().toIso8601String(),
+      createdAt:
+          map['created_at'] as String? ?? DateTime.now().toIso8601String(),
       cultivoEspecie: map['cultivo_especie'] as String?,
       cultivoVariedad: map['cultivo_variedad'] as String?,
       terrenoNombre: map['terreno_nombre'] as String?,

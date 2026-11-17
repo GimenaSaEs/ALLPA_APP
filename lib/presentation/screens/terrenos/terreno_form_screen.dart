@@ -27,7 +27,9 @@ class _TerrenoFormScreenState extends State<TerrenoFormScreen> {
     _areaCtrl = TextEditingController(
       text: widget.terreno != null ? widget.terreno!.areaHa.toString() : '',
     );
-    _ubicacionCtrl = TextEditingController(text: widget.terreno?.ubicacion ?? '');
+    _ubicacionCtrl = TextEditingController(
+      text: widget.terreno?.ubicacion ?? '',
+    );
   }
 
   @override
@@ -46,7 +48,9 @@ class _TerrenoFormScreenState extends State<TerrenoFormScreen> {
     // Validar duplicados de nombre de terreno accidental
     final nombreIngresado = _nombreCtrl.text.trim();
     final existeDuplicado = prov.terrenos.any(
-      (t) => t.id != widget.terreno?.id && t.nombre.toLowerCase() == nombreIngresado.toLowerCase(),
+      (t) =>
+          t.id != widget.terreno?.id &&
+          t.nombre.toLowerCase() == nombreIngresado.toLowerCase(),
     );
 
     if (existeDuplicado) {
@@ -69,7 +73,7 @@ class _TerrenoFormScreenState extends State<TerrenoFormScreen> {
           ],
         ),
       );
-      if (proceder != true) return;
+      if (!mounted || proceder != true) return;
     }
 
     final areaHa = double.parse(_areaCtrl.text.trim().replaceAll(',', '.'));
@@ -78,9 +82,12 @@ class _TerrenoFormScreenState extends State<TerrenoFormScreen> {
       agricultorId: prov.agricultor?.id ?? 1,
       nombre: nombreIngresado,
       areaHa: areaHa,
-      ubicacion: _ubicacionCtrl.text.trim().isEmpty ? null : _ubicacionCtrl.text.trim(),
+      ubicacion: _ubicacionCtrl.text.trim().isEmpty
+          ? null
+          : _ubicacionCtrl.text.trim(),
       createdAt: widget.terreno?.createdAt ?? DateTime.now().toIso8601String(),
     );
+    final messenger = ScaffoldMessenger.of(context);
 
     try {
       await prov.saveTerreno(nuevoTerreno);
@@ -88,14 +95,17 @@ class _TerrenoFormScreenState extends State<TerrenoFormScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            widget.terreno == null ? 'Terreno registrado con éxito.' : 'Terreno actualizado con éxito.',
+            widget.terreno == null
+                ? 'Terreno registrado con éxito.'
+                : 'Terreno actualizado con éxito.',
           ),
           backgroundColor: AppColors.success,
         ),
       );
       Navigator.pop(context);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      if (!mounted) return;
+      messenger.showSnackBar(
         SnackBar(
           content: Text('Error al guardar: $e'),
           backgroundColor: AppColors.error,
@@ -121,7 +131,7 @@ class _TerrenoFormScreenState extends State<TerrenoFormScreen> {
             children: [
               Card(
                 elevation: 0,
-                color: AppColors.primaryContainer.withOpacity(0.35),
+                color: AppColors.primaryContainer.withValues(alpha: 0.35),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                   side: const BorderSide(color: AppColors.primaryLight),
@@ -156,14 +166,19 @@ class _TerrenoFormScreenState extends State<TerrenoFormScreen> {
                   hintText: 'Ej. Huayllapampa, Pampa Chuyma',
                   prefixIcon: Icon(Icons.badge, color: AppColors.primary),
                 ),
-                validator: (v) => Validators.requiredField(v, message: 'Ingrese el nombre del terreno'),
+                validator: (v) => Validators.requiredField(
+                  v,
+                  message: 'Ingrese el nombre del terreno',
+                ),
               ),
               const SizedBox(height: 16),
 
               // Superficie disponible en ha
               TextFormField(
                 controller: _areaCtrl,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
                 decoration: const InputDecoration(
                   labelText: 'Superficie Disponible (en hectáreas - ha) *',
                   hintText: 'Ej. 1.5, 0.75, 2.0',
@@ -192,7 +207,9 @@ class _TerrenoFormScreenState extends State<TerrenoFormScreen> {
               ElevatedButton.icon(
                 onPressed: _guardar,
                 icon: const Icon(Icons.save),
-                label: Text(esEdicion ? 'ACTUALIZAR TERRENO' : 'GUARDAR TERRENO'),
+                label: Text(
+                  esEdicion ? 'ACTUALIZAR TERRENO' : 'GUARDAR TERRENO',
+                ),
               ),
             ],
           ),

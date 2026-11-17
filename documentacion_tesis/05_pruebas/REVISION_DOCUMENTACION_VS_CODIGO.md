@@ -1,41 +1,31 @@
 # Revisión cruzada: documentación de tesis y código
 
-Fecha: 2026-11-17. Alcance: revisión de `documentacion_tesis/`, requisitos extraídos de la tesis (`RF-01..RF-06`, `RNF-01..RNF-03`), código fuente y comandos Flutter ejecutados en esta revisión.
+Revisión: 2026-11-17. Se contrastaron los requisitos RF-01..RF-06/RNF-01..RNF-03, el código, las pruebas automatizadas y la ejecución observada en Android.
 
 ## Dictamen
 
-La carpeta de documentación **describe correctamente la estructura de datos y reconoce la integración incompleta**, pero no equivale a una demostración de que ALLPA esté funcional de extremo a extremo. El punto de entrada `lib/main.dart` todavía presenta el contador Flutter; las pantallas, provider y repositorios ALLPA no se inicializan desde allí. La documentación sí lo advierte en README, arquitectura, manuales y trazabilidad. Por ello, el estado documentado coincide con el código en cuanto a la limitación, mientras que los requisitos funcionales de tesis aún no están aceptados como implementados.
+La documentación anterior estaba desactualizada: indicaba que no había dispositivo, que la app no se había iniciado en Android y que todas las capturas estaban pendientes. La evidencia actual contradice esas tres afirmaciones. La app ALLPA se instaló y abrió en un Samsung SM-A155M Android 14; OFF-01 confirmó que el perfil sintético persiste tras reiniciar la app sin Wi-Fi ni datos móviles. Solo EV-01 y EV-13 tienen capturas reales en esta revisión.
 
-## Comparación resumida
+La verificación no cubre todas las operaciones funcionales ni la aceptación de campo. Las demás capacidades que se describen abajo se contrastaron con rutas, formularios, provider y repositorios, y con pruebas automatizadas de alcance limitado.
 
-| Tema de la tesis / carpeta | Lo que muestra el código revisado | Evaluación |
+| Requisito | Implementación observada | Validación / estado |
 |---|---|---|
-| Perfil y datos del agricultor (RF-01) | Modelo, repositorio, provider y pantalla de perfil parcial. | Parcial; navegación no conectada. |
-| Terrenos (RF-02) | Modelo, repositorio y pantallas de lista, detalle y formulario. | Parcial; UI no alcanzable desde el arranque. |
-| Cultivo/plan de siembra (RF-03) | Modelo, repositorios, formularios y cálculos de desfase. | Parcial; no probado como flujo completo. |
-| Labores e insumos (RF-04) | Modelos, repositorios y formularios. | Parcial; integración y pruebas funcionales pendientes. |
-| Bitácora (RF-05) | Repositorio con consultas agregadas y filtros del provider. | Capa de datos presente; no se localizó pantalla. |
-| Cosecha (RF-06) | Modelo/repositorio y cálculo de métricas. | Capa de datos presente; formulario/pantalla referenciada está ausente. |
-| SQLite local / sin señal (RNF-01) | Helper y migración SQLite; prueba FFI en memoria confirma esquema, FK y una inserción relacionada. | Persistencia local diseñada; modo avión y persistencia Android no verificados. |
-| Integridad (RNF-03) | Restricciones SQL y clase `Validators`. | Parte comprobada en FFI (FK y área positiva); falta cobertura completa e integración de validadores en UI. |
-| Usabilidad (RNF-02) | Sin prueba con usuarios en los artefactos. | Pendiente; no declarar aceptación. |
-| Capturas EV | Trece archivos de estado pendiente; no se hallaron imágenes de ejecución. La tesis fuente enumeraba EV-01..EV-06. | Aún no coincide con el requisito de evidencia real; las trece capturas deben obtenerse de una versión ejecutable. |
-| Diagramas e informe técnico | Diagramas derivan de estructura/código existente y advierten que no son prueba de ejecución. | Útiles como documentación técnica, no como evidencia de aceptación. |
+| RF-01 Perfil | Bienvenida, formulario y guardado vía `AllpaProvider`/repositorio | Widget abre el formulario; guardado y persistencia del perfil comprobados en Android; EV-01/13 |
+| RF-02 Terrenos | Lista, alta, detalle y edición conectados a provider/repositorio | FFI comprueba FK y área > 0; captura y recorrido CRUD completo pendientes |
+| RF-03 Cultivo/siembra | Lista, formulario, detalle y plan enlazados | Navegación a cultivos cubierta por widget; CRUD completo y EV-03/07/08 pendientes |
+| RF-04 Labores/insumos | Formularios accesibles desde detalle del cultivo | Código conectado; captura y recorrido CRUD Android pendientes |
+| RF-05 Bitácora | Consulta consolidada, filtros y copia CSV | Pantalla/código presentes; EV-05/11 y comprobación funcional con registros pendientes |
+| RF-06 Cosecha | Formulario, repositorio y cálculos enlazados | Código presente; recorrido CRUD y EV-06 pendientes |
+| RNF-01 Sin señal | SQLite local sin backend; perfil recuperado tras relanzar sin red | OFF-01 pasa para perfil; no acredita todas las entidades ni operaciones |
+| RNF-02 Usabilidad | Formularios y navegación implementados | No evaluado con participantes |
+| RNF-03 Integridad | Validadores, FK y checks en SQLite | FFI comprueba tablas/FK/área; otras restricciones pendientes |
 
-## Comprobaciones repetidas
+## Comprobaciones ejecutadas
 
-- `flutter test --reporter expanded`: 3 pasaron (dos SQLite FFI y un contador widget).
-- `flutter analyze`: falla con 106 hallazgos.
-- `flutter build windows --debug`: no compila porque Windows Developer Mode/symlink support está deshabilitado.
-- `flutter build apk --debug`: compiló en la revisión anterior; produce la pantalla contador, no el sistema agrícola integrado.
-- No hay Android emulador/dispositivo en este entorno, así que no se instaló ni ensayó modo avión.
+- `flutter analyze`: `No issues found!`.
+- `flutter test --reporter expanded`: 5 pruebas pasaron (2 SQLite FFI, 3 widget).
+- `flutter build apk --debug`: correcto; `build/app/outputs/flutter-apk/app-debug.apk`.
+- Android: instalación, inicio y reinicio sin red observados en Samsung SM-A155M Android 14.
+- `flutter build windows --debug`: no disponible en este equipo por symlink support deshabilitado.
 
-## Cambios necesarios para que la tesis y el producto queden alineados
-
-1. Conectar Provider y navegación ALLPA desde `main.dart` y completar las vistas ausentes.
-2. Corregir los errores que reporta `flutter analyze` y reemplazar el widget test de contador por pruebas de pantallas/funciones relevantes.
-3. Probar operaciones CRUD y cierres/reaperturas sobre archivo SQLite en Android, incluida la prueba en modo avión.
-4. Ejecutar los criterios RF/RNF con datos sintéticos y registrar resultados observados, dispositivo y versión.
-5. Capturar las trece pantallas reales solicitadas; mantenerlas sin datos personales y con sus metadatos.
-
-Hasta completar estos puntos, usar expresiones como “diseñado”, “presente en la capa de datos” o “parcial” para los módulos sin validación integral; no reportarlos como funcionalidades aceptadas.
+Las capturas EV-01 y EV-13 son evidencia real de bienvenida y persistencia del perfil, respectivamente. EV-02..EV-12 permanecen pendientes. Consultar `RESULTADOS.md` para el alcance preciso de cada comprobación.

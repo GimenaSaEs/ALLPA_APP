@@ -1,13 +1,14 @@
-# Estado de preparación
+# Estado actual de ALLPA
 
-- Git está instalado, pero `allpa/` no era un repositorio Git y no se detectó remoto configurado.
-- El arranque es la app Counter estándar; no inicializa Provider ni `WelcomeScreen`.
-- `welcome_screen.dart` importa `home_dashboard_screen.dart`, que no se encuentra en `lib/`.
-- El test único aún afirma comportamiento de contador.
-- La base de datos y capa de datos tienen entidades y operaciones, pero no se acreditó el CRUD desde una UI integrada.
-- `DatabaseHelper.seedInitialDataIfEmpty()` incluía nombre, documento y teléfono de apariencia identificable; fue retirado para reducir riesgo de publicación. No había una base real versionada localizada.
-- La compilación APK, análisis y test se consignan en `../05_pruebas/RESULTADOS.md` al ejecutar.
-- Las release usan firma debug en `android/app/build.gradle.kts`; no es configuración de distribución pública.
-- No se encontraron capturas de ejecución. Solo se reservan EV-01..EV-13; no se fabrican imágenes.
-- Hay funciones de datos de bitácora, indicadores, exportación CSV y cálculos. Su presencia no prueba disponibilidad desde la interfaz.
-- Revisión cruzada de documentación/código y prueba de build Windows: documentacion_tesis/05_pruebas/REVISION_DOCUMENTACION_VS_CODIGO.md; compilación Windows bloqueada por symlink support deshabilitado. La suite Flutter volvió a pasar 3 pruebas y el análisis reportó 106 hallazgos.
+- `lib/main.dart` inicializa `AllpaProvider`; primera ejecución lleva a bienvenida/perfil y un perfil existente abre el panel ALLPA.
+- El panel conecta terrenos, cultivos, bitácora, indicadores y perfil. El detalle de cultivo enlaza plan de siembra, labores, insumos y cosecha.
+- Formularios de las entidades persisten a través de repositorios SQLite.
+- `flutter analyze`: `No issues found!` (verificación del 17-11-2026).
+- `flutter test --reporter expanded`: 5 pruebas pasan: SQLite FFI en memoria, bienvenida/perfil y navegación básica.
+- `flutter build apk --debug`: correcto; APK en `build/app/outputs/flutter-apk/app-debug.apk`.
+- Android: instalado y abierto en Samsung SM-A155M Android 14. OFF-01 verificó la recuperación del perfil sintético después de forzar cierre y relanzar sin Wi-Fi/datos; ver EV-13.
+- Capturas reales disponibles: EV-01 bienvenida, EV-13 reinicio sin red. EV-02..EV-12 pendientes.
+- `flutter build windows --debug` no se completó por Developer Mode/symlink support deshabilitado en este equipo.
+- Esquema SQLite declarado versión 1; `onUpgrade` aún no contiene migraciones efectivas posteriores.
+- Build actual debug; release requiere firma configurada fuera del repositorio.
+- No se encontró base de datos real versionada ni se incluyeron datos personales de agricultores en las capturas.

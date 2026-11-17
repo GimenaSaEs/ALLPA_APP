@@ -1,19 +1,22 @@
-# Casos de prueba y resultados observados
+# Casos de prueba ejecutados y pendientes
 
-Consulte [RESULTADOS.md](RESULTADOS.md) para comandos, conteos y resultados reales de esta revisión.
+## Ejecutados
 
-## Cobertura técnica ejecutada
+| ID | Caso | Resultado |
+|---|---|---|
+| DB-01 | Crear esquema SQLite FFI y comprobar siete tablas + FK activas | Pasó |
+| DB-02 | Insertar agricultor/terreno sintético relacionado y rechazar área cero | Pasó |
+| UI-01 | Abrir bienvenida ALLPA sin datos de inicio | Pasó |
+| UI-02 | Desde bienvenida navegar al formulario de perfil | Pasó |
+| UI-03 | Navegar en panel a terrenos y cultivos | Pasó |
+| OFF-01 | Apagar Wi-Fi/datos, forzar cierre y relanzar; comprobar perfil local | Pasó para el perfil sintético en Samsung SM-A155M Android 14; evidencia EV-13 |
 
-- DB-01 (parcial): creación de siete tablas y FK activa.
-- DB-02 (parcial): inserción vinculada de agricultor sintético y terreno y rechazo de área cero.
-- Widget smoke: contador de plantilla, sin alcance funcional ALLPA.
+## Pendientes
 
-## Casos pendientes
+- Validar alta/edición/consulta de terrenos, cultivos, planes, labores, insumos y cosechas en Android.
+- Comprobar unicidad de plan/cosecha, eliminaciones y checks restantes.
+- Probar persistencia sin red de entidades agrícolas además del perfil.
+- Ejecutar prueba guiada de usabilidad con participantes e instrumento aprobado.
+- Obtener capturas reales EV-02..EV-12. EV-01 y EV-13 ya cuentan con capturas reales.
 
-- DB-03: unicidad del plan y cosecha por cultivo.
-- DB-04: reglas de borrado y relaciones.
-- APP-01..APP-06: aceptación RF-01..RF-06 desde una aplicación integrada.
-- OFF-01: modo avión y persistencia del archivo SQLite en dispositivo Android.
-- Usabilidad: tareas guiadas con agricultores/participantes, registro observado de éxito, errores y duración.
-
-Los pendientes son propuestas, no se cuentan como ejecutados.
+Los comandos y resultados están en `RESULTADOS.md`. Los pendientes no se cuentan como ejecutados.

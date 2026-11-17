@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../core/constants/app_colors.dart';
-import '../../core/utils/validators.dart';
-import '../../data/models/agricultor_model.dart';
-import '../providers/allpa_provider.dart';
-import '../widgets/sync_status_badge.dart';
-import '../screens/home_dashboard_screen.dart';
+import '../../../core/constants/app_colors.dart';
+import '../../../core/utils/validators.dart';
+import '../../../data/models/agricultor_model.dart';
+import '../../providers/allpa_provider.dart';
+import '../../widgets/sync_status_badge.dart';
+import '../home_dashboard_screen.dart';
 
 class PerfilScreen extends StatefulWidget {
   final bool isFirstTime;
@@ -36,14 +36,18 @@ class _PerfilScreenState extends State<PerfilScreen> {
 
     _nombreCtrl = TextEditingController(text: agr?.nombre ?? '');
     _codigoCtrl = TextEditingController(
-      text: agr?.codigoLocal ?? 'AGR-ILLPE-${DateTime.now().millisecondsSinceEpoch.toString().substring(8)}',
+      text:
+          agr?.codigoLocal ??
+          'AGR-ILLPE-${DateTime.now().millisecondsSinceEpoch.toString().substring(8)}',
     );
     _documentoCtrl = TextEditingController(text: agr?.documento ?? '');
     _telefonoCtrl = TextEditingController(text: agr?.telefono ?? '');
     _comunidadCtrl = TextEditingController(text: agr?.comunidad ?? 'Illpe');
     _distritoCtrl = TextEditingController(text: agr?.distrito ?? 'Pachamarca');
     _provinciaCtrl = TextEditingController(text: agr?.provincia ?? 'Churcampa');
-    _departamentoCtrl = TextEditingController(text: agr?.departamento ?? 'Huancavelica');
+    _departamentoCtrl = TextEditingController(
+      text: agr?.departamento ?? 'Huancavelica',
+    );
     _siembraIndividual = (agr?.siembraIndividual ?? 1) == 1;
   }
 
@@ -68,8 +72,12 @@ class _PerfilScreenState extends State<PerfilScreen> {
       id: prov.agricultor?.id,
       nombre: _nombreCtrl.text.trim(),
       codigoLocal: _codigoCtrl.text.trim(),
-      documento: _documentoCtrl.text.trim().isEmpty ? null : _documentoCtrl.text.trim(),
-      telefono: _telefonoCtrl.text.trim().isEmpty ? null : _telefonoCtrl.text.trim(),
+      documento: _documentoCtrl.text.trim().isEmpty
+          ? null
+          : _documentoCtrl.text.trim(),
+      telefono: _telefonoCtrl.text.trim().isEmpty
+          ? null
+          : _telefonoCtrl.text.trim(),
       comunidad: _comunidadCtrl.text.trim(),
       distrito: _distritoCtrl.text.trim(),
       provincia: _provinciaCtrl.text.trim(),
@@ -84,7 +92,9 @@ class _PerfilScreenState extends State<PerfilScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Perfil guardado correctamente en la base de datos local.'),
+          content: Text(
+            'Perfil guardado correctamente en la base de datos local.',
+          ),
           backgroundColor: AppColors.success,
         ),
       );
@@ -107,11 +117,32 @@ class _PerfilScreenState extends State<PerfilScreen> {
     }
   }
 
+  Widget _responsiveFieldPair(Widget first, Widget second) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 620) {
+          return Column(
+            children: [first, const SizedBox(height: 12), second],
+          );
+        }
+        return Row(
+          children: [
+            Expanded(child: first),
+            const SizedBox(width: 10),
+            Expanded(child: second),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.isFirstTime ? 'Registro de Productor' : 'Perfil del Productor'),
+        title: Text(
+          widget.isFirstTime ? 'Registro de Productor' : 'Perfil del Productor',
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(18),
@@ -126,7 +157,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
               // Cabecera de identidad
               Card(
                 elevation: 0,
-                color: AppColors.primaryContainer.withOpacity(0.4),
+                color: AppColors.primaryContainer.withValues(alpha: 0.4),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                   side: const BorderSide(color: AppColors.primaryLight),
@@ -135,7 +166,11 @@ class _PerfilScreenState extends State<PerfilScreen> {
                   padding: EdgeInsets.all(14),
                   child: Row(
                     children: [
-                      Icon(Icons.person_pin, size: 36, color: AppColors.primaryDark),
+                      Icon(
+                        Icons.person_pin,
+                        size: 36,
+                        color: AppColors.primaryDark,
+                      ),
                       SizedBox(width: 12),
                       Expanded(
                         child: Text(
@@ -172,7 +207,10 @@ class _PerfilScreenState extends State<PerfilScreen> {
                   hintText: 'Ej. Persona de prueba',
                   prefixIcon: Icon(Icons.person, color: AppColors.primary),
                 ),
-                validator: (v) => Validators.requiredField(v, message: 'Ingrese su nombre completo'),
+                validator: (v) => Validators.requiredField(
+                  v,
+                  message: 'Ingrese su nombre completo',
+                ),
               ),
               const SizedBox(height: 14),
 
@@ -184,7 +222,10 @@ class _PerfilScreenState extends State<PerfilScreen> {
                   hintText: 'Ej. AGR-ILLPE-001',
                   prefixIcon: Icon(Icons.badge, color: AppColors.primary),
                 ),
-                validator: (v) => Validators.requiredField(v, message: 'El código local es requerido'),
+                validator: (v) => Validators.requiredField(
+                  v,
+                  message: 'El código local es requerido',
+                ),
               ),
               const SizedBox(height: 14),
 
@@ -223,58 +264,50 @@ class _PerfilScreenState extends State<PerfilScreen> {
               ),
               const SizedBox(height: 10),
 
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _comunidadCtrl,
-                      decoration: const InputDecoration(
-                        labelText: 'Comunidad / Centro Poblado',
-                        prefixIcon: Icon(Icons.home, color: AppColors.primary),
-                      ),
+              _responsiveFieldPair(
+                TextFormField(
+                  controller: _comunidadCtrl,
+                  decoration: const InputDecoration(
+                    labelText: 'Comunidad / Centro Poblado',
+                    prefixIcon: Icon(Icons.home, color: AppColors.primary),
+                  ),
+                ),
+                TextFormField(
+                  controller: _distritoCtrl,
+                  decoration: const InputDecoration(
+                    labelText: 'Distrito',
+                    prefixIcon: Icon(
+                      Icons.location_city,
+                      color: AppColors.primary,
                     ),
                   ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _distritoCtrl,
-                      decoration: const InputDecoration(
-                        labelText: 'Distrito',
-                        prefixIcon: Icon(Icons.location_city, color: AppColors.primary),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
               const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _provinciaCtrl,
-                      decoration: const InputDecoration(
-                        labelText: 'Provincia',
-                        prefixIcon: Icon(Icons.map, color: AppColors.primary),
-                      ),
-                    ),
+              _responsiveFieldPair(
+                TextFormField(
+                  controller: _provinciaCtrl,
+                  decoration: const InputDecoration(
+                    labelText: 'Provincia',
+                    prefixIcon: Icon(Icons.map, color: AppColors.primary),
                   ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _departamentoCtrl,
-                      decoration: const InputDecoration(
-                        labelText: 'Departamento',
-                        prefixIcon: Icon(Icons.public, color: AppColors.primary),
-                      ),
-                    ),
+                ),
+                TextFormField(
+                  controller: _departamentoCtrl,
+                  decoration: const InputDecoration(
+                    labelText: 'Departamento',
+                    prefixIcon: Icon(Icons.public, color: AppColors.primary),
                   ),
-                ],
+                ),
               ),
               const SizedBox(height: 20),
 
               // Indicador: Siembra Individual
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
@@ -288,10 +321,13 @@ class _PerfilScreenState extends State<PerfilScreen> {
                   ),
                   subtitle: const Text(
                     'Indicador de investigación: conducción de parcelas por cuenta propia.',
-                    style: TextStyle(fontSize: 12.5, color: AppColors.textMuted),
+                    style: TextStyle(
+                      fontSize: 12.5,
+                      color: AppColors.textMuted,
+                    ),
                   ),
                   value: _siembraIndividual,
-                  activeColor: AppColors.primary,
+                  activeThumbColor: AppColors.primary,
                   onChanged: (val) {
                     setState(() {
                       _siembraIndividual = val;

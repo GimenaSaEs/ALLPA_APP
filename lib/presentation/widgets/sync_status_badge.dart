@@ -12,7 +12,7 @@ class SyncStatusBadge extends StatelessWidget {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
         decoration: BoxDecoration(
-          color: AppColors.primaryLight.withOpacity(0.15),
+          color: AppColors.primaryLight.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: AppColors.primary, width: 1),
         ),

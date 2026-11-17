@@ -1,42 +1,37 @@
-# INFORME TÉCNICO PARA CAPÍTULO III — ALLPA
+# Informe técnico para Capítulo III — ALLPA
 
-## Alcance y estado de la evidencia
+**Fecha de verificación:** 17 de noviembre de 2026. Este informe describe el código presente y separa resultados observados de funcionalidades cuya aceptación aún requiere pruebas adicionales.
 
-Este informe describe lo observado en el código entregado. La tesis especifica requisitos y evidencias fotográficas esperadas, pero el producto del directorio aún tiene una integración incompleta. No se reportan resultados de usuarios, cobertura, ni validación fuera de línea hasta que existan registros verificables.
+## Arquitectura implementada
 
-## Arquitectura y componentes
+`lib/main.dart` crea `AllpaProvider`, que inicializa SQLite. Si no existe perfil, presenta `WelcomeScreen` y el formulario de perfil; con perfil existente abre `HomeDashboardScreen`. La presentación reside en `lib/presentation/screens` y `widgets`; el estado compartido está en `lib/presentation/providers`; modelos y consultas están en `lib/data/models` y `lib/data/repositories`; persistencia y migración están en `lib/core/database`. SQLite mediante `sqflite` funciona en el dispositivo sin backend. `sqflite_common_ffi` permite probar el esquema en memoria desde pruebas de escritorio.
 
-La organización separa presentación (`lib/presentation`), estado (`AllpaProvider`), modelos/repositorios (`lib/data`) y servicios locales (`lib/core/database`). `DatabaseHelper` administra SQLite con migración versionada y `DatabaseMigrations` crea tablas, claves foráneas e índices. `sqflite_common_ffi` habilita una fábrica FFI en escritorio y modo test. El provider coordina repositorios y mantiene listas de terreno, cultivo, labores, insumos, cosechas, bitácora e indicadores. El punto de entrada, sin embargo, todavía monta el contador Flutter y no este provider.
+## Módulos y evidencia técnica
 
-## Módulos y flujo técnico
+| Módulo y objetivo | Archivos/clases principales | Tablas | Flujo y validación identificada | Prueba/captura |
+|---|---|---|---|---|
+| Perfil: identificar al agricultor local | `welcome_screen.dart`, `perfil/perfil_screen.dart`, `AllpaProvider`, `AgricultorRepository` | `agricultor` | Bienvenida → formulario → provider → repositorio → SQLite; nombre/código requeridos y código único | UI-01/UI-02; perfil sintético persiste tras OFF-01; EV-01/13 |
+| Terrenos: organizar parcelas | `terrenos/terrenos_list_screen.dart`, `terreno_form_screen.dart`, `terreno_detail_screen.dart`, `TerrenoRepository` | `agricultor`, `terreno` | Panel → lista/formulario → guardado/consulta; área positiva y FK | DB-02 cubre FK/área en FFI; EV-02/10 pendientes |
+| Cultivos y siembra: asociar campaña y fechas | `cultivos/cultivos_list_screen.dart`, `cultivo_form_screen.dart`, `cultivo_detail_screen.dart`, `plan_siembra/plan_siembra_form_screen.dart`, repositorios | `terreno`, `cultivo`, `plan_siembra` | Cultivo enlaza a terreno; detalle abre plan; fechas producen desfase/estado; relación de plan única | UI-03 verifica navegación; EV-03/07/08 y CRUD completo pendientes |
+| Labores: registrar actividad y jornales | `labores/labor_form_screen.dart`, `LaborRepository` | `cultivo`, `labor` | Detalle → formulario → repositorio; jornales no negativos | Validación automatizada integral y EV-04 pendientes |
+| Insumos: registrar materiales y cantidades | `insumos/insumo_form_screen.dart`, `InsumoRepository` | `cultivo`, `insumo` | Detalle → formulario → SQLite; cantidad no negativa | Validación automatizada integral y EV-04 pendientes |
+| Bitácora: consultar actividades | `bitacora/bitacora_screen.dart`, `BitacoraRepository` | `plan_siembra`, `labor`, `insumo`, `cosecha` | Consultas combinadas con filtros por terreno/tipo; copia CSV | Código presente; recorrido con registros y EV-05/11 pendientes |
+| Cosecha: registrar producción | `cosechas/cosecha_form_screen.dart`, `CosechaRepository` | `cultivo`, `cosecha` | Detalle → fecha/área/producción/jornales → cálculos de rendimiento y kg/jornal; una cosecha por cultivo | Recorrido CRUD y EV-06 pendientes |
+| Indicadores: resumir campaña | `indicadores/indicadores_screen.dart`, `IndicadoresRepository` | varias tablas agrícolas | Agregaciones de terreno/cultivo/plan/insumo/labor/cosecha y exportación CSV | Código presente; resultados con registros y EV-12 pendientes |
 
-| Módulo y objetivo | Archivos/clases principales | Tablas | Flujo | Validaciones observables | Pruebas/captura |
-|---|---|---|---|---|---|
-| Perfil: datos del agricultor | `perfil_screen.dart`, `AgricultorModel`, `AgricultorRepository`, `AllpaProvider` | agricultor | formulario → provider → repo → SQLite → lectura | `nombre`, `codigo_local` NOT NULL; código UNIQUE | APP-01 pendiente; EV-01 pendiente |
-| Terrenos: registrar superficie/ubicación | pantallas `terrenos/*`, `TerrenoModel`, repo | agricultor, terreno | UI → provider → repo → FK y fila | área > 0 en SQL; UI usa `Validators` | APP-02 pendiente; EV-02/10 |
-| Cultivos: asociar especie y superficie al terreno | `cultivos/*`, modelo y repo cultivo | terreno, cultivo, plan_siembra | captura → cultivo ligado a terreno; consulta puede anexar plan/cosecha | especie/fecha obligatorias en SQL; utilitario limita superficie >5% con aviso/error | APP-03 pendiente; EV-07/08 |
-| Plan de siembra: guardar fecha prevista/real | `PlanSiembraModel`, repo, `plan_siembra_form_screen.dart` | plan_siembra, cultivo | fechas → repo calcula desfase/estado → upsert por cultivo | una fila por cultivo; `escrito` 0/1 | APP-03 pendiente; EV-03 |
-| Labores: registrar tarea y jornales | `labor_form_screen.dart`, modelo/repo | labor, cultivo | formulario → provider → repo → lectura | tipo/fecha requeridos; jornales >=0 en SQL | APP-04 pendiente; EV-04 |
-| Insumos: registrar recursos aplicados | `insumo_form_screen.dart`, modelo/repo | insumo, cultivo | formulario → provider → repo → consulta | cantidad >=0; nombre/tipo/unidad/fecha obligatorios en SQL | APP-04 pendiente; EV-04 |
-| Bitácora: consolidar eventos y filtrar | `BitacoraRepository`, `BitacoraItem`, filtros provider | labor, insumo, plan_siembra, cosecha + joins | consultas SQL con joins y filtros → lista agregada → CSV | filtro por terreno/cultivo/tipo; no hay pantalla localizada | APP-05 pendiente; EV-05/11 |
-| Cosecha: registrar producción | `CosechaModel`, `CosechaRepository` | cosecha, cultivo | guarda cosecha; calcula rendimiento/productividad; actualiza estado | una cosecha por cultivo; área >0, kg/jornales >=0 | APP-06 pendiente; EV-06 |
-| Indicadores: métricas por cultivo/resumen | `IndicadoresRepository`, `IndicadoresModel`, cálculos | agricultor, terreno, cultivo, plan, insumo, labor, cosecha | joins/agregaciones → métricas → provider/CSV | divisiones inválidas se evitan mediante chequeos en funciones | prueba pendiente; EV-12 |
-| Exportación: salida de bitácora/indicadores | `CsvExporter`, `AllpaProvider` | vistas derivadas de las tablas anteriores | mapa de filas → texto CSV | codificación/escape según utilitario, validar importación | prueba pendiente; EV-11 |
+El esquema y las relaciones documentados se contrastaron con `lib/core/database/database_migrations.dart`; ver `documentacion_tesis/02_base_datos/ESQUEMA_SQLITE.md`.
 
-La validación de formulario depende de su conexión con los widgets; la existencia de `Validators` y restricciones SQL no acredita que todas las pantallas las invoquen.
+## Verificación y resultados
 
-## Persistencia y seguridad de datos
+- `flutter analyze`: `No issues found!`.
+- `flutter test --reporter expanded`: cinco pruebas automáticas pasan (dos de esquema SQLite FFI y tres widget).
+- `flutter build apk --debug`: exitoso; artefacto en `build/app/outputs/flutter-apk/app-debug.apk`.
+- Instalación e inicio observados en Samsung SM-A155M Android 14; aparece ALLPA y no la pantalla demo de Flutter.
+- OFF-01 pasó para persistencia del perfil sintético: con Wi-Fi/datos apagados se forzó cierre y se relanzó la aplicación; el panel recuperó el perfil. Evidencia EV-13.
+- `flutter build windows --debug` no se completó porque en este equipo está deshabilitado el soporte de symlinks requerido por Flutter.
 
-Esquema versión 1: agricultor, terreno, cultivo, plan_siembra, labor, insumo y cosecha. Relaciones y restricciones exactas constan en `documentacion_tesis/02_base_datos/ESQUEMA_SQLITE.md`. La aplicación apunta a operar localmente sin backend. No se verificó mediante modo avión. `.gitignore` excluye bases locales, archivos de firma y configuración local; una revisión manual adicional sigue siendo necesaria al preparar commits.
+Las pruebas FFI usan SQLite en memoria y no validan el almacenamiento persistente Android. OFF-01 no prueba la persistencia de las demás entidades ni todos los flujos CRUD. No se ejecutaron pruebas de usabilidad con participantes. Las capturas reales disponibles son EV-01 (bienvenida) y EV-13 (reinicio sin red); EV-02..EV-12 siguen pendientes. Consultar `documentacion_tesis/05_pruebas/RESULTADOS.md` y `REVISION_DOCUMENTACION_VS_CODIGO.md` para el detalle y los límites.
 
-## Limitaciones identificadas
+## Seguridad y mantenimiento
 
-El arranque Flutter aún presenta el contador. Falta `home_dashboard_screen.dart` referenciado desde la pantalla de bienvenida. El test incluido prueba contador. No se encontraron vistas completas para cosecha, bitácora o indicadores, ni capturas reales. La migración v2 es un comentario vacío. Release usa firma debug. El APK de esta revisión, si compila, no debe describirse como demostración operativa de ALLPA.
-
-## Protocolo de verificación propuesto
-
-Ejecutar análisis estático, pruebas Flutter y build APK; después, integrar navegación, agregar pruebas de esquema/repositorios y UI, instalar en Android, activar modo avión, registrar y recuperar datos tras reinicio. Adjuntar logs completos, versión, dispositivo, datos sintéticos y capturas EV correspondientes. Aceptación de usabilidad requiere observación real y registro de tareas, errores y duración.
-
-## Evidencias
-
-La revisión del 2026-11-17 resolvió dependencias, el análisis reportó 106 hallazgos, pasaron tres tests Flutter (dos de esquema SQLite FFI y el widget smoke de plantilla) y se generó el APK debug. Resultados de comandos y límites se registran en `documentacion_tesis/05_pruebas/RESULTADOS.md`. Las trece ubicaciones EV se describen en `documentacion_tesis/04_capturas/README.md`; están pendientes de capturas reales. Los requisitos RF-01..RF-06 y RNF-01..RNF-03 se enlazan con código y pruebas propuestas en `documentacion_tesis/06_trazabilidad/TRAZABILIDAD.md`.
+Los datos se almacenan localmente y no existe sincronización/backend configurado. No se conserva una base de agricultores reales en el repositorio; se usó un perfil sintético sin documento ni teléfono para la prueba Android. Antes de publicar, revisar `git status`, secretos y bases locales. `.gitignore` excluye archivos de firma, propiedades locales y bases de datos. La compilación actual es debug; distribución requiere firma de release administrada fuera del repositorio.

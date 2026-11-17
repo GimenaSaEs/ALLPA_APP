@@ -53,7 +53,8 @@ class AgricultorModel {
       provincia: map['provincia'] as String? ?? 'Churcampa',
       departamento: map['departamento'] as String? ?? 'Huancavelica',
       siembraIndividual: map['siembra_individual'] as int? ?? 1,
-      createdAt: map['created_at'] as String? ?? DateTime.now().toIso8601String(),
+      createdAt:
+          map['created_at'] as String? ?? DateTime.now().toIso8601String(),
     );
   }
 

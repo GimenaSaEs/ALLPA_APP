@@ -1,4 +1,3 @@
-import 'package:sqflite/sqflite.dart';
 import '../../core/database/database_helper.dart';
 import '../models/cultivo_model.dart';
 
@@ -6,7 +5,7 @@ class CultivoRepository {
   final DatabaseHelper _dbHelper;
 
   CultivoRepository({DatabaseHelper? dbHelper})
-      : _dbHelper = dbHelper ?? DatabaseHelper.instance;
+    : _dbHelper = dbHelper ?? DatabaseHelper.instance;
 
   Future<List<CultivoModel>> getAllCultivos() async {
     final db = await _dbHelper.database;
@@ -30,7 +29,8 @@ class CultivoRepository {
 
   Future<List<CultivoModel>> getCultivosByTerreno(int terrenoId) async {
     final db = await _dbHelper.database;
-    final List<Map<String, dynamic>> maps = await db.rawQuery('''
+    final List<Map<String, dynamic>> maps = await db.rawQuery(
+      '''
       SELECT c.*, 
         t.nombre as terreno_nombre,
         t.area_ha as terreno_area_ha,
@@ -44,14 +44,17 @@ class CultivoRepository {
       LEFT JOIN plan_siembra ps ON c.id = ps.cultivo_id
       WHERE c.terreno_id = ?
       ORDER BY c.id DESC
-    ''', [terrenoId]);
+    ''',
+      [terrenoId],
+    );
 
     return maps.map((m) => CultivoModel.fromMap(m)).toList();
   }
 
   Future<CultivoModel?> getCultivoById(int id) async {
     final db = await _dbHelper.database;
-    final List<Map<String, dynamic>> maps = await db.rawQuery('''
+    final List<Map<String, dynamic>> maps = await db.rawQuery(
+      '''
       SELECT c.*, 
         t.nombre as terreno_nombre,
         t.area_ha as terreno_area_ha,
@@ -64,7 +67,9 @@ class CultivoRepository {
       JOIN terreno t ON c.terreno_id = t.id
       LEFT JOIN plan_siembra ps ON c.id = ps.cultivo_id
       WHERE c.id = ?
-    ''', [id]);
+    ''',
+      [id],
+    );
 
     if (maps.isNotEmpty) {
       return CultivoModel.fromMap(maps.first);

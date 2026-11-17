@@ -4,8 +4,10 @@ class PlanSiembraModel {
   final String? fechaPrevista;
   final String? fechaReal;
   final int escrito; // 1 = sí, 0 = no
-  final int? desfaseDias; // positivo = retraso, 0 = a tiempo, negativo = adelantado
-  final String estado; // 'Pendiente', 'Cumplido a tiempo', 'Cumplido con desfase'
+  final int?
+  desfaseDias; // positivo = retraso, 0 = a tiempo, negativo = adelantado
+  final String
+  estado; // 'Pendiente', 'Cumplido a tiempo', 'Cumplido con desfase'
   final String? observacion;
   final String createdAt;
 
@@ -45,7 +47,8 @@ class PlanSiembraModel {
       desfaseDias: map['desfase_dias'] as int?,
       estado: map['estado'] as String? ?? 'Pendiente',
       observacion: map['observacion'] as String?,
-      createdAt: map['created_at'] as String? ?? DateTime.now().toIso8601String(),
+      createdAt:
+          map['created_at'] as String? ?? DateTime.now().toIso8601String(),
     );
   }
 

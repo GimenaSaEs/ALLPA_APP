@@ -1,12 +1,18 @@
 class Validators {
-  static String? requiredField(String? value, {String message = 'Este campo es obligatorio'}) {
+  static String? requiredField(
+    String? value, {
+    String message = 'Este campo es obligatorio',
+  }) {
     if (value == null || value.trim().isEmpty) {
       return message;
     }
     return null;
   }
 
-  static String? positiveNumber(String? value, {String message = 'Ingrese un número mayor a 0'}) {
+  static String? positiveNumber(
+    String? value, {
+    String message = 'Ingrese un número mayor a 0',
+  }) {
     if (value == null || value.trim().isEmpty) {
       return 'Este campo es obligatorio';
     }
@@ -17,7 +23,10 @@ class Validators {
     return null;
   }
 
-  static String? nonNegativeNumber(String? value, {String message = 'Ingrese un número válido (mayor o igual a 0)'}) {
+  static String? nonNegativeNumber(
+    String? value, {
+    String message = 'Ingrese un número válido (mayor o igual a 0)',
+  }) {
     if (value == null || value.trim().isEmpty) {
       return 'Este campo es obligatorio';
     }
@@ -39,11 +48,18 @@ class Validators {
     return null;
   }
 
-  static String? validateAreaAgainstTerreno(String? areaCultivoStr, double areaTerreno) {
-    final err = positiveNumber(areaCultivoStr, message: 'La superficie debe ser mayor a 0');
+  static String? validateAreaAgainstTerreno(
+    String? areaCultivoStr,
+    double areaTerreno,
+  ) {
+    final err = positiveNumber(
+      areaCultivoStr,
+      message: 'La superficie debe ser mayor a 0',
+    );
     if (err != null) return err;
     final areaCultivo = double.parse(areaCultivoStr!.replaceAll(',', '.'));
-    if (areaCultivo > areaTerreno * 1.05) { // tolerancia del 5% o aviso
+    if (areaCultivo > areaTerreno * 1.05) {
+      // tolerancia del 5% o aviso
       return 'La superficie ($areaCultivo ha) excede el área del terreno ($areaTerreno ha)';
     }
     return null;

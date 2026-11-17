@@ -51,7 +51,7 @@ class BitacoraRepository {
   final DatabaseHelper _dbHelper;
 
   BitacoraRepository({DatabaseHelper? dbHelper})
-      : _dbHelper = dbHelper ?? DatabaseHelper.instance;
+    : _dbHelper = dbHelper ?? DatabaseHelper.instance;
 
   Future<List<BitacoraItem>> getBitacora({
     int? terrenoId,
@@ -84,21 +84,24 @@ class BitacoraRepository {
 
       final res = await db.rawQuery(query, args);
       for (final row in res) {
-        items.add(BitacoraItem(
-          tipoRegistro: 'Labor',
-          id: row['id'] as int,
-          cultivoId: row['cultivo_id'] as int,
-          cultivoEspecie: row['cultivo_especie'] as String,
-          cultivoVariedad: row['cultivo_variedad'] as String?,
-          terrenoId: row['terreno_id'] as int,
-          terrenoNombre: row['terreno_nombre'] as String,
-          fecha: row['fecha'] as String,
-          titulo: 'Labor: ${row['tipo']}',
-          detalle: '${(row['jornales'] as num).toDouble()} jornales familiares dedicados',
-          observacion: row['nota'] as String?,
-          cantidadJornales: (row['jornales'] as num).toDouble(),
-          unidad: 'jornales',
-        ));
+        items.add(
+          BitacoraItem(
+            tipoRegistro: 'Labor',
+            id: row['id'] as int,
+            cultivoId: row['cultivo_id'] as int,
+            cultivoEspecie: row['cultivo_especie'] as String,
+            cultivoVariedad: row['cultivo_variedad'] as String?,
+            terrenoId: row['terreno_id'] as int,
+            terrenoNombre: row['terreno_nombre'] as String,
+            fecha: row['fecha'] as String,
+            titulo: 'Labor: ${row['tipo']}',
+            detalle:
+                '${(row['jornales'] as num).toDouble()} jornales familiares dedicados',
+            observacion: row['nota'] as String?,
+            cantidadJornales: (row['jornales'] as num).toDouble(),
+            unidad: 'jornales',
+          ),
+        );
       }
     }
 
@@ -125,25 +128,30 @@ class BitacoraRepository {
 
       final res = await db.rawQuery(query, args);
       for (final row in res) {
-        items.add(BitacoraItem(
-          tipoRegistro: 'Insumo',
-          id: row['id'] as int,
-          cultivoId: row['cultivo_id'] as int,
-          cultivoEspecie: row['cultivo_especie'] as String,
-          cultivoVariedad: row['cultivo_variedad'] as String?,
-          terrenoId: row['terreno_id'] as int,
-          terrenoNombre: row['terreno_nombre'] as String,
-          fecha: row['fecha'] as String,
-          titulo: '${row['tipo']}: ${row['nombre']}',
-          detalle: 'Aplicado: ${(row['cantidad'] as num).toDouble()} ${row['unidad']}',
-          cantidadJornales: (row['cantidad'] as num).toDouble(),
-          unidad: row['unidad'] as String?,
-        ));
+        items.add(
+          BitacoraItem(
+            tipoRegistro: 'Insumo',
+            id: row['id'] as int,
+            cultivoId: row['cultivo_id'] as int,
+            cultivoEspecie: row['cultivo_especie'] as String,
+            cultivoVariedad: row['cultivo_variedad'] as String?,
+            terrenoId: row['terreno_id'] as int,
+            terrenoNombre: row['terreno_nombre'] as String,
+            fecha: row['fecha'] as String,
+            titulo: '${row['tipo']}: ${row['nombre']}',
+            detalle:
+                'Aplicado: ${(row['cantidad'] as num).toDouble()} ${row['unidad']}',
+            cantidadJornales: (row['cantidad'] as num).toDouble(),
+            unidad: row['unidad'] as String?,
+          ),
+        );
       }
     }
 
     // 3. Siembras (Plan y Fecha Real)
-    if (tipoFiltro == null || tipoFiltro == 'Todos' || tipoFiltro == 'Siembra') {
+    if (tipoFiltro == null ||
+        tipoFiltro == 'Todos' ||
+        tipoFiltro == 'Siembra') {
       String query = '''
         SELECT ps.id, ps.cultivo_id, ps.fecha_prevista, ps.fecha_real, ps.desfase_dias, ps.estado, ps.observacion,
                c.especie as cultivo_especie, c.variedad as cultivo_variedad, c.area_sembrada_ha,
@@ -170,28 +178,34 @@ class BitacoraRepository {
         if (desfase != null) {
           desfaseTxt = desfase == 0
               ? 'Siembra puntual (0 días)'
-              : (desfase > 0 ? 'Desfase de +$desfase días' : 'Adelanto de $desfase días');
+              : (desfase > 0
+                    ? 'Desfase de +$desfase días'
+                    : 'Adelanto de $desfase días');
         }
-        items.add(BitacoraItem(
-          tipoRegistro: 'Siembra',
-          id: row['id'] as int,
-          cultivoId: row['cultivo_id'] as int,
-          cultivoEspecie: row['cultivo_especie'] as String,
-          cultivoVariedad: row['cultivo_variedad'] as String?,
-          terrenoId: row['terreno_id'] as int,
-          terrenoNombre: row['terreno_nombre'] as String,
-          fecha: row['fecha_real'] as String,
-          titulo: 'Siembra de ${row['cultivo_especie']}',
-          detalle: 'Superficie: ${row['area_sembrada_ha']} ha • $desfaseTxt',
-          observacion: row['observacion'] as String?,
-          cantidadJornales: (row['area_sembrada_ha'] as num).toDouble(),
-          unidad: 'ha',
-        ));
+        items.add(
+          BitacoraItem(
+            tipoRegistro: 'Siembra',
+            id: row['id'] as int,
+            cultivoId: row['cultivo_id'] as int,
+            cultivoEspecie: row['cultivo_especie'] as String,
+            cultivoVariedad: row['cultivo_variedad'] as String?,
+            terrenoId: row['terreno_id'] as int,
+            terrenoNombre: row['terreno_nombre'] as String,
+            fecha: row['fecha_real'] as String,
+            titulo: 'Siembra de ${row['cultivo_especie']}',
+            detalle: 'Superficie: ${row['area_sembrada_ha']} ha • $desfaseTxt',
+            observacion: row['observacion'] as String?,
+            cantidadJornales: (row['area_sembrada_ha'] as num).toDouble(),
+            unidad: 'ha',
+          ),
+        );
       }
     }
 
     // 4. Cosechas
-    if (tipoFiltro == null || tipoFiltro == 'Todos' || tipoFiltro == 'Cosecha') {
+    if (tipoFiltro == null ||
+        tipoFiltro == 'Todos' ||
+        tipoFiltro == 'Cosecha') {
       String query = '''
         SELECT cos.id, cos.cultivo_id, cos.fecha, cos.area_ha, cos.produccion_kg,
                cos.rendimiento_kg_ha, cos.jornales, cos.observacion,
@@ -215,21 +229,24 @@ class BitacoraRepository {
       final res = await db.rawQuery(query, args);
       for (final row in res) {
         final rend = (row['rendimiento_kg_ha'] as num?)?.toDouble() ?? 0.0;
-        items.add(BitacoraItem(
-          tipoRegistro: 'Cosecha',
-          id: row['id'] as int,
-          cultivoId: row['cultivo_id'] as int,
-          cultivoEspecie: row['cultivo_especie'] as String,
-          cultivoVariedad: row['cultivo_variedad'] as String?,
-          terrenoId: row['terreno_id'] as int,
-          terrenoNombre: row['terreno_nombre'] as String,
-          fecha: row['fecha'] as String,
-          titulo: 'Cosecha de ${row['cultivo_especie']}',
-          detalle: 'Producción: ${row['produccion_kg']} kg en ${row['area_ha']} ha • Rendimiento: $rend kg/ha',
-          observacion: row['observacion'] as String?,
-          cantidadJornales: (row['produccion_kg'] as num).toDouble(),
-          unidad: 'kg',
-        ));
+        items.add(
+          BitacoraItem(
+            tipoRegistro: 'Cosecha',
+            id: row['id'] as int,
+            cultivoId: row['cultivo_id'] as int,
+            cultivoEspecie: row['cultivo_especie'] as String,
+            cultivoVariedad: row['cultivo_variedad'] as String?,
+            terrenoId: row['terreno_id'] as int,
+            terrenoNombre: row['terreno_nombre'] as String,
+            fecha: row['fecha'] as String,
+            titulo: 'Cosecha de ${row['cultivo_especie']}',
+            detalle:
+                'Producción: ${row['produccion_kg']} kg en ${row['area_ha']} ha • Rendimiento: $rend kg/ha',
+            observacion: row['observacion'] as String?,
+            cantidadJornales: (row['produccion_kg'] as num).toDouble(),
+            unidad: 'kg',
+          ),
+        );
       }
     }
 

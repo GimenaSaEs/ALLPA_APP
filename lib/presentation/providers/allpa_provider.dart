@@ -64,9 +64,9 @@ class AllpaProvider with ChangeNotifier {
   int? get filtroCultivoId => _filtroCultivoId;
   String get filtroTipo => _filtroTipo;
 
-  // Estado Offline: ALLPA funciona 100% fuera de línea con SQLite
+  // Los módulos conectados usan almacenamiento local SQLite.
   bool get isOfflineMode => true;
-  String get syncStatusText => 'Almacenamiento Local (SQLite) • 100% Sin Internet';
+  String get syncStatusText => 'Almacenamiento local SQLite';
 
   /// Carga inicial de datos al iniciar la app
   Future<void> initializeApp() async {
@@ -119,6 +119,7 @@ class AllpaProvider with ChangeNotifier {
       await refreshAll();
     } catch (e) {
       _errorMessage = 'Error al guardar perfil: $e';
+      rethrow;
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -130,7 +131,9 @@ class AllpaProvider with ChangeNotifier {
     if (_agricultor == null) return;
     try {
       if (model.id == null) {
-        await _terrenoRepo.insertTerreno(model.copyWith(agricultorId: _agricultor!.id!));
+        await _terrenoRepo.insertTerreno(
+          model.copyWith(agricultorId: _agricultor!.id!),
+        );
       } else {
         await _terrenoRepo.updateTerreno(model);
       }

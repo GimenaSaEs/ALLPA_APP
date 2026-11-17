@@ -33,7 +33,9 @@ class _InsumoFormScreenState extends State<InsumoFormScreen> {
     _selectedCultivoId = widget.insumo?.cultivoId ?? widget.cultivoId;
     _selectedTipo = widget.insumo?.tipo ?? InputTypes.types.first;
     _nombreCtrl = TextEditingController(
-      text: widget.insumo?.nombre ?? (_selectedTipo == 'Semilla' ? 'Semilla seleccionada' : ''),
+      text:
+          widget.insumo?.nombre ??
+          (_selectedTipo == 'Semilla' ? 'Semilla seleccionada' : ''),
     );
     _cantidadCtrl = TextEditingController(
       text: widget.insumo != null ? widget.insumo!.cantidad.toString() : '',
@@ -53,7 +55,8 @@ class _InsumoFormScreenState extends State<InsumoFormScreen> {
   }
 
   Future<void> _pickDate() async {
-    final DateTime initialDate = DateFormatter.parseIso(_fechaCtrl.text) ?? DateTime.now();
+    final DateTime initialDate =
+        DateFormatter.parseIso(_fechaCtrl.text) ?? DateTime.now();
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: initialDate,
@@ -73,12 +76,16 @@ class _InsumoFormScreenState extends State<InsumoFormScreen> {
     if (!_formKey.currentState!.validate()) return;
     if (_selectedCultivoId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Debe seleccionar el cultivo correspondiente.')),
+        const SnackBar(
+          content: Text('Debe seleccionar el cultivo correspondiente.'),
+        ),
       );
       return;
     }
 
-    final cantidad = double.parse(_cantidadCtrl.text.trim().replaceAll(',', '.'));
+    final cantidad = double.parse(
+      _cantidadCtrl.text.trim().replaceAll(',', '.'),
+    );
     final prov = context.read<AllpaProvider>();
 
     final nuevoInsumo = InsumoModel(
@@ -98,7 +105,9 @@ class _InsumoFormScreenState extends State<InsumoFormScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            widget.insumo == null ? 'Insumo registrado con éxito.' : 'Insumo actualizado con éxito.',
+            widget.insumo == null
+                ? 'Insumo registrado con éxito.'
+                : 'Insumo actualizado con éxito.',
           ),
           backgroundColor: AppColors.success,
         ),
@@ -129,7 +138,11 @@ class _InsumoFormScreenState extends State<InsumoFormScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.warning_amber_rounded, size: 64, color: AppColors.warning),
+                const Icon(
+                  Icons.warning_amber_rounded,
+                  size: 64,
+                  color: AppColors.warning,
+                ),
                 const SizedBox(height: 16),
                 const Text(
                   'No hay cultivos activos',
@@ -156,7 +169,9 @@ class _InsumoFormScreenState extends State<InsumoFormScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(esEdicion ? 'Editar Insumo Agrícola' : 'Registro de Insumo Agrícola'),
+        title: Text(
+          esEdicion ? 'Editar Insumo Agrícola' : 'Registro de Insumo Agrícola',
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(18),
@@ -167,7 +182,7 @@ class _InsumoFormScreenState extends State<InsumoFormScreen> {
             children: [
               Card(
                 elevation: 0,
-                color: AppColors.primaryContainer.withOpacity(0.35),
+                color: AppColors.primaryContainer.withValues(alpha: 0.35),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                   side: const BorderSide(color: AppColors.primaryLight),
@@ -196,7 +211,7 @@ class _InsumoFormScreenState extends State<InsumoFormScreen> {
 
               // Selector de Cultivo
               DropdownButtonFormField<int>(
-                value: _selectedCultivoId,
+                initialValue: _selectedCultivoId,
                 decoration: const InputDecoration(
                   labelText: 'Cultivo Asociado *',
                   prefixIcon: Icon(Icons.eco, color: AppColors.primary),
@@ -204,7 +219,9 @@ class _InsumoFormScreenState extends State<InsumoFormScreen> {
                 items: cultivos.map((c) {
                   return DropdownMenuItem<int>(
                     value: c.id,
-                    child: Text('${c.especie} (${c.variedad ?? "Común"}) en ${c.terrenoNombre}'),
+                    child: Text(
+                      '${c.especie} (${c.variedad ?? "Común"}) en ${c.terrenoNombre}',
+                    ),
                   );
                 }).toList(),
                 onChanged: esEdicion
@@ -218,7 +235,7 @@ class _InsumoFormScreenState extends State<InsumoFormScreen> {
 
               // Tipo de insumo
               DropdownButtonFormField<String>(
-                value: _selectedTipo,
+                initialValue: _selectedTipo,
                 decoration: const InputDecoration(
                   labelText: 'Tipo de Insumo *',
                   prefixIcon: Icon(Icons.category, color: AppColors.primary),
@@ -247,10 +264,14 @@ class _InsumoFormScreenState extends State<InsumoFormScreen> {
                 controller: _nombreCtrl,
                 decoration: const InputDecoration(
                   labelText: 'Nombre / Detalle del Insumo *',
-                  hintText: 'Ej. Semilla Canchán primera, Guano de corral ovino',
+                  hintText:
+                      'Ej. Semilla Canchán primera, Guano de corral ovino',
                   prefixIcon: Icon(Icons.description, color: AppColors.primary),
                 ),
-                validator: (v) => Validators.requiredField(v, message: 'Ingrese el nombre del insumo'),
+                validator: (v) => Validators.requiredField(
+                  v,
+                  message: 'Ingrese el nombre del insumo',
+                ),
               ),
               const SizedBox(height: 16),
 
@@ -262,11 +283,16 @@ class _InsumoFormScreenState extends State<InsumoFormScreen> {
                     flex: 5,
                     child: TextFormField(
                       controller: _cantidadCtrl,
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       decoration: const InputDecoration(
                         labelText: 'Cantidad *',
                         hintText: 'Ej. 50, 250, 1200',
-                        prefixIcon: Icon(Icons.numbers, color: AppColors.primary),
+                        prefixIcon: Icon(
+                          Icons.numbers,
+                          color: AppColors.primary,
+                        ),
                       ),
                       validator: (v) => Validators.nonNegativeNumber(
                         v,
@@ -278,10 +304,8 @@ class _InsumoFormScreenState extends State<InsumoFormScreen> {
                   Expanded(
                     flex: 6,
                     child: DropdownButtonFormField<String>(
-                      value: _selectedUnidad,
-                      decoration: const InputDecoration(
-                        labelText: 'Unidad *',
-                      ),
+                      initialValue: _selectedUnidad,
+                      decoration: const InputDecoration(labelText: 'Unidad *'),
                       items: InputTypes.units.map((u) {
                         return DropdownMenuItem<String>(
                           value: u,
@@ -305,10 +329,16 @@ class _InsumoFormScreenState extends State<InsumoFormScreen> {
                     controller: _fechaCtrl,
                     decoration: InputDecoration(
                       labelText: 'Fecha de Aplicación / Uso *',
-                      prefixIcon: const Icon(Icons.calendar_month, color: AppColors.primary),
+                      prefixIcon: const Icon(
+                        Icons.calendar_month,
+                        color: AppColors.primary,
+                      ),
                       helperText: DateFormatter.toFullDisplay(_fechaCtrl.text),
                     ),
-                    validator: (v) => Validators.requiredField(v, message: 'Seleccione la fecha'),
+                    validator: (v) => Validators.requiredField(
+                      v,
+                      message: 'Seleccione la fecha',
+                    ),
                   ),
                 ),
               ),

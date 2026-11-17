@@ -8,7 +8,18 @@ class CsvExporter {
     }
 
     final List<List<dynamic>> rows = [
-      ['Tipo_Registro', 'Cultivo', 'Especie', 'Variedad', 'Terreno', 'Fecha', 'Detalle_Labor_o_Insumo', 'Cantidad_o_Jornales', 'Unidad', 'Observaciones'],
+      [
+        'Tipo_Registro',
+        'Cultivo',
+        'Especie',
+        'Variedad',
+        'Terreno',
+        'Fecha',
+        'Detalle_Labor_o_Insumo',
+        'Cantidad_o_Jornales',
+        'Unidad',
+        'Observaciones',
+      ],
     ];
 
     for (final r in records) {
@@ -27,11 +38,13 @@ class CsvExporter {
     }
 
     // Retorna con BOM UTF-8 para apertura directa en Microsoft Excel / SPSS
-    return '\uFEFF' + const ListToCsvConverter().convert(rows);
+    return '\uFEFF${csv.encode(rows)}';
   }
 
   /// Genera cadena CSV para los indicadores de investigación de la tesis
-  static String exportIndicatorsToCsv(List<Map<String, dynamic>> indicatorRows) {
+  static String exportIndicatorsToCsv(
+    List<Map<String, dynamic>> indicatorRows,
+  ) {
     final List<List<dynamic>> rows = [
       [
         'ID_Cultivo',
@@ -80,6 +93,6 @@ class CsvExporter {
       ]);
     }
 
-    return '\uFEFF' + const ListToCsvConverter().convert(rows);
+    return '\uFEFF${csv.encode(rows)}';
   }
 }

@@ -1,26 +1,20 @@
 # Casos de prueba y resultados observados
 
-Fecha de ejecución: 2026-11-17 (America/Lima). Se anotan únicamente salidas observadas; no se declara cobertura porcentual.
+Fecha de revisión: 2026-11-17 (America/Lima). No se reporta porcentaje de cobertura.
 
-## Ejecución
-
-| Comando | Resultado observado |
+| Comando / verificación | Resultado observado |
 |---|---|
-| `flutter pub get` | Correcto. Dependencias resueltas; Flutter informó que 23 paquetes tienen versiones más recientes fuera de las restricciones actuales. |
-| `flutter analyze` | Falló. Informó 106 hallazgos en el proyecto, con errores de compilación/análisis y advertencias/info; entre ellos imports inexistentes (`home_dashboard_screen.dart`, `cosecha_form_screen.dart`), errores sintácticos en pantallas y errores de símbolos/imports. |
-| `flutter test --reporter compact` | Correcto: 3 pruebas pasaron (2 de esquema SQLite FFI y 1 smoke test del contador Flutter). El widget test solo valida la plantilla. |
-| `flutter test test/database_schema_test.dart` | Correcto: 2 pruebas pasaron. Verifican siete tablas, `PRAGMA foreign_keys=1`, persistencia vinculada con datos sintéticos y rechazo de área cero. |
-| `flutter build apk --debug` | Correcto. Generó `build/app/outputs/flutter-apk/app-debug.apk` (debug). El binario ejecuta el `main.dart` de contador, no los flujos ALLPA. |
-| `flutter build windows --debug` | Falló antes de compilar: Windows requiere habilitar Developer Mode para admitir symlinks. |
-| Instalación Android / modo avión / relanzamiento | No ejecutada: `flutter devices` detectó Windows y navegadores, sin emulador ni dispositivo Android. Por tanto no se afirma funcionamiento offline del aplicativo Android. |
+| `flutter analyze` | Correcto: `No issues found!` (112.4 s). |
+| `flutter test --reporter expanded` | Correcto: 5 pruebas pasan: dos de esquema SQLite FFI y tres widget de bienvenida, perfil y navegación del panel. |
+| `flutter build apk --debug` | Correcto; APK generado en `build/app/outputs/flutter-apk/app-debug.apk`. |
+| Instalación y arranque Android | Correctos en Samsung SM-A155M con Android 14; la app muestra la bienvenida/panel de ALLPA, no la pantalla demo de Flutter. |
+| Persistencia al reiniciar sin red | Correcta para el perfil sintético `Agricultor demo`: con Wi-Fi y datos móviles apagados, se forzó el cierre y se reabrió la app; reapareció el panel con ese perfil. Ver `../04_capturas/EV-13_persistencia_sin_red.png`. |
+| `flutter build windows --debug` | No compila en este equipo: Flutter requiere Developer Mode para crear symlinks de plugins. |
 
-## Casos de prueba funcionales propuestos
+## Alcance y límites
 
-No se consideran ejecutados:
+La prueba OFF-01 acredita persistencia local del perfil después de un cierre forzado y relanzamiento con las radios desactivadas en un dispositivo Android. No prueba cada operación CRUD, la persistencia de terrenos/cultivos/bitácora, una instalación limpia en modo avión, pérdida/recuperación de datos, ni usabilidad con participantes.
 
-- APP-01 a APP-06: criterios RF-01..RF-06 de perfil, terrenos, cultivo/siembra, labores/insumos, bitácora y cosecha una vez integrada la navegación.
-- OFF-01: crear y consultar registros en modo avión y confirmar persistencia tras cerrar/reabrir en Android.
-- DB-03: probar unicidad de plan/cosecha por cultivo; DB-04: restricciones de borrado referencial.
-- Prueba guiada de usabilidad con participantes, midiendo éxito, errores y duración.
+Las pruebas de SQLite usan `sqflite_common_ffi` en memoria: comprueban las siete tablas, claves foráneas activas, inserción relacionada y rechazo de superficie cero. No sustituyen la prueba de persistencia Android. Las cinco pruebas automatizadas no constituyen aceptación de campo.
 
-El test agregado usa SQLite en memoria mediante `sqflite_common_ffi`; no demuestra persistencia de archivo ni comportamiento de la app Android desconectada.
+La app se ejecutó y se navegaron los módulos principales. Las capturas reales disponibles son EV-01 (bienvenida inicial) y EV-13 (panel después de reiniciar sin red). EV-02 a EV-12 siguen pendientes; EV-13 no equivale a las demás evidencias solicitadas.

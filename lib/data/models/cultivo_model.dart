@@ -57,7 +57,8 @@ class CultivoModel {
       areaSembradaHa: (map['area_sembrada_ha'] as num?)?.toDouble() ?? 0.0,
       fechaInicio: map['fecha_inicio'] as String? ?? '',
       estado: map['estado'] as String? ?? 'En curso',
-      createdAt: map['created_at'] as String? ?? DateTime.now().toIso8601String(),
+      createdAt:
+          map['created_at'] as String? ?? DateTime.now().toIso8601String(),
       terrenoNombre: map['terreno_nombre'] as String?,
       terrenoAreaHa: (map['terreno_area_ha'] as num?)?.toDouble(),
       planSiembraId: map['plan_siembra_id'] as int?,

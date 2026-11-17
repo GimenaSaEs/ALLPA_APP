@@ -32,9 +32,13 @@ class _CultivoFormScreenState extends State<CultivoFormScreen> {
     super.initState();
     _selectedTerrenoId = widget.cultivo?.terrenoId ?? widget.terrenoId;
     _selectedEspecie = widget.cultivo?.especie ?? 'Papa';
-    _variedadCtrl = TextEditingController(text: widget.cultivo?.variedad ?? 'Canchán');
+    _variedadCtrl = TextEditingController(
+      text: widget.cultivo?.variedad ?? 'Canchán',
+    );
     _areaSembradaCtrl = TextEditingController(
-      text: widget.cultivo != null ? widget.cultivo!.areaSembradaHa.toString() : '',
+      text: widget.cultivo != null
+          ? widget.cultivo!.areaSembradaHa.toString()
+          : '',
     );
     _fechaInicioCtrl = TextEditingController(
       text: widget.cultivo?.fechaInicio ?? DateFormatter.toIso(DateTime.now()),
@@ -51,7 +55,8 @@ class _CultivoFormScreenState extends State<CultivoFormScreen> {
   }
 
   Future<void> _seleccionarFecha() async {
-    final DateTime initialDate = DateFormatter.parseIso(_fechaInicioCtrl.text) ?? DateTime.now();
+    final DateTime initialDate =
+        DateFormatter.parseIso(_fechaInicioCtrl.text) ?? DateTime.now();
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: initialDate,
@@ -79,7 +84,9 @@ class _CultivoFormScreenState extends State<CultivoFormScreen> {
     final prov = context.read<AllpaProvider>();
     final terreno = prov.terrenos.firstWhere((t) => t.id == _selectedTerrenoId);
 
-    final areaSembrada = double.parse(_areaSembradaCtrl.text.trim().replaceAll(',', '.'));
+    final areaSembrada = double.parse(
+      _areaSembradaCtrl.text.trim().replaceAll(',', '.'),
+    );
 
     // Validar coherencia de superficie
     final valErr = Validators.validateAreaAgainstTerreno(
@@ -91,9 +98,7 @@ class _CultivoFormScreenState extends State<CultivoFormScreen> {
         context: context,
         builder: (ctx) => AlertDialog(
           title: const Text('Advertencia de Superficie'),
-          content: Text(
-            '$valErr. ¿Está seguro de guardar este valor?',
-          ),
+          content: Text('$valErr. ¿Está seguro de guardar este valor?'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx, false),
@@ -106,19 +111,22 @@ class _CultivoFormScreenState extends State<CultivoFormScreen> {
           ],
         ),
       );
-      if (proceder != true) return;
+      if (!mounted || proceder != true) return;
     }
 
     final nuevoCultivo = CultivoModel(
       id: widget.cultivo?.id,
       terrenoId: _selectedTerrenoId!,
       especie: _selectedEspecie,
-      variedad: _variedadCtrl.text.trim().isEmpty ? null : _variedadCtrl.text.trim(),
+      variedad: _variedadCtrl.text.trim().isEmpty
+          ? null
+          : _variedadCtrl.text.trim(),
       areaSembradaHa: areaSembrada,
       fechaInicio: _fechaInicioCtrl.text.trim(),
       estado: _estado,
       createdAt: widget.cultivo?.createdAt ?? DateTime.now().toIso8601String(),
     );
+    final messenger = ScaffoldMessenger.of(context);
 
     try {
       await prov.saveCultivo(nuevoCultivo);
@@ -126,14 +134,17 @@ class _CultivoFormScreenState extends State<CultivoFormScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            widget.cultivo == null ? 'Cultivo registrado con éxito.' : 'Cultivo actualizado con éxito.',
+            widget.cultivo == null
+                ? 'Cultivo registrado con éxito.'
+                : 'Cultivo actualizado con éxito.',
           ),
           backgroundColor: AppColors.success,
         ),
       );
       Navigator.pop(context);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      if (!mounted) return;
+      messenger.showSnackBar(
         SnackBar(
           content: Text('Error al guardar: $e'),
           backgroundColor: AppColors.error,
@@ -157,7 +168,11 @@ class _CultivoFormScreenState extends State<CultivoFormScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.warning_amber_rounded, size: 64, color: AppColors.warning),
+                const Icon(
+                  Icons.warning_amber_rounded,
+                  size: 64,
+                  color: AppColors.warning,
+                ),
                 const SizedBox(height: 16),
                 const Text(
                   'No hay terrenos registrados',
@@ -183,7 +198,8 @@ class _CultivoFormScreenState extends State<CultivoFormScreen> {
     // Default terrenoId si no estaba seteado
     _selectedTerrenoId ??= terrenos.first.id;
 
-    final variedadesSugeridas = CropTypes.varietiesMap[_selectedEspecie] ?? ['Variedad local'];
+    final variedadesSugeridas =
+        CropTypes.varietiesMap[_selectedEspecie] ?? ['Variedad local'];
 
     return Scaffold(
       appBar: AppBar(
@@ -198,7 +214,7 @@ class _CultivoFormScreenState extends State<CultivoFormScreen> {
             children: [
               // Selector de Terreno
               DropdownButtonFormField<int>(
-                value: _selectedTerrenoId,
+                initialValue: _selectedTerrenoId,
                 decoration: const InputDecoration(
                   labelText: 'Terreno / Parcela *',
                   prefixIcon: Icon(Icons.landscape, color: AppColors.primary),
@@ -222,16 +238,13 @@ class _CultivoFormScreenState extends State<CultivoFormScreen> {
 
               // Selector de Especie
               DropdownButtonFormField<String>(
-                value: _selectedEspecie,
+                initialValue: _selectedEspecie,
                 decoration: const InputDecoration(
                   labelText: 'Especie Agrícola *',
                   prefixIcon: Icon(Icons.eco, color: AppColors.primary),
                 ),
                 items: CropTypes.speciesList.map((esp) {
-                  return DropdownMenuItem<String>(
-                    value: esp,
-                    child: Text(esp),
-                  );
+                  return DropdownMenuItem<String>(value: esp, child: Text(esp));
                 }).toList(),
                 onChanged: (val) {
                   if (val != null) {
@@ -254,16 +267,20 @@ class _CultivoFormScreenState extends State<CultivoFormScreen> {
                   labelText: 'Variedad *',
                   hintText: 'Ej. Canchán, Yungay, Blanco común',
                   prefixIcon: const Icon(Icons.spa, color: AppColors.primary),
-                  helperText: 'Sugeridas: ${variedadesSugeridas.take(4).join(", ")}',
+                  helperText:
+                      'Sugeridas: ${variedadesSugeridas.take(4).join(", ")}',
                 ),
-                validator: (v) => Validators.requiredField(v, message: 'Ingrese la variedad'),
+                validator: (v) =>
+                    Validators.requiredField(v, message: 'Ingrese la variedad'),
               ),
               const SizedBox(height: 16),
 
               // Superficie sembrada en ha
               TextFormField(
                 controller: _areaSembradaCtrl,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
                 decoration: const InputDecoration(
                   labelText: 'Superficie Sembrada (ha) *',
                   hintText: 'Ej. 0.5, 1.0, 1.25',
@@ -285,10 +302,18 @@ class _CultivoFormScreenState extends State<CultivoFormScreen> {
                     controller: _fechaInicioCtrl,
                     decoration: InputDecoration(
                       labelText: 'Fecha de Siembra o Inicio *',
-                      prefixIcon: const Icon(Icons.calendar_month, color: AppColors.primary),
-                      helperText: DateFormatter.toFullDisplay(_fechaInicioCtrl.text),
+                      prefixIcon: const Icon(
+                        Icons.calendar_month,
+                        color: AppColors.primary,
+                      ),
+                      helperText: DateFormatter.toFullDisplay(
+                        _fechaInicioCtrl.text,
+                      ),
                     ),
-                    validator: (v) => Validators.requiredField(v, message: 'Seleccione la fecha'),
+                    validator: (v) => Validators.requiredField(
+                      v,
+                      message: 'Seleccione la fecha',
+                    ),
                   ),
                 ),
               ),
@@ -296,16 +321,28 @@ class _CultivoFormScreenState extends State<CultivoFormScreen> {
 
               // Estado del cultivo
               DropdownButtonFormField<String>(
-                value: _estado,
+                initialValue: _estado,
                 decoration: const InputDecoration(
                   labelText: 'Estado del Cultivo *',
                   prefixIcon: Icon(Icons.timelapse, color: AppColors.primary),
                 ),
                 items: const [
-                  DropdownMenuItem(value: 'Planificado', child: Text('Planificado')),
-                  DropdownMenuItem(value: 'En curso', child: Text('En curso (Activo)')),
-                  DropdownMenuItem(value: 'Cosechado', child: Text('Cosechado')),
-                  DropdownMenuItem(value: 'Finalizado', child: Text('Finalizado')),
+                  DropdownMenuItem(
+                    value: 'Planificado',
+                    child: Text('Planificado'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'En curso',
+                    child: Text('En curso (Activo)'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'Cosechado',
+                    child: Text('Cosechado'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'Finalizado',
+                    child: Text('Finalizado'),
+                  ),
                 ],
                 onChanged: (val) {
                   if (val != null) setState(() => _estado = val);
@@ -316,7 +353,9 @@ class _CultivoFormScreenState extends State<CultivoFormScreen> {
               ElevatedButton.icon(
                 onPressed: _guardar,
                 icon: const Icon(Icons.save),
-                label: Text(esEdicion ? 'ACTUALIZAR CULTIVO' : 'GUARDAR CULTIVO'),
+                label: Text(
+                  esEdicion ? 'ACTUALIZAR CULTIVO' : 'GUARDAR CULTIVO',
+                ),
               ),
             ],
           ),

@@ -49,7 +49,8 @@ class InsumoModel {
       cantidad: (map['cantidad'] as num?)?.toDouble() ?? 0.0,
       unidad: map['unidad'] as String? ?? '',
       fecha: map['fecha'] as String? ?? '',
-      createdAt: map['created_at'] as String? ?? DateTime.now().toIso8601String(),
+      createdAt:
+          map['created_at'] as String? ?? DateTime.now().toIso8601String(),
       cultivoEspecie: map['cultivo_especie'] as String?,
       cultivoVariedad: map['cultivo_variedad'] as String?,
       terrenoNombre: map['terreno_nombre'] as String?,

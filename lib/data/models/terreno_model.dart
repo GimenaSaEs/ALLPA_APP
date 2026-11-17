@@ -39,9 +39,11 @@ class TerrenoModel {
       nombre: map['nombre'] as String? ?? '',
       areaHa: (map['area_ha'] as num?)?.toDouble() ?? 0.0,
       ubicacion: map['ubicacion'] as String?,
-      createdAt: map['created_at'] as String? ?? DateTime.now().toIso8601String(),
+      createdAt:
+          map['created_at'] as String? ?? DateTime.now().toIso8601String(),
       cultivosCount: map['cultivos_count'] as int? ?? 0,
-      areaSembradaTotal: (map['area_sembrada_total'] as num?)?.toDouble() ?? 0.0,
+      areaSembradaTotal:
+          (map['area_sembrada_total'] as num?)?.toDouble() ?? 0.0,
     );
   }
 

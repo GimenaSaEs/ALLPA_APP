@@ -40,7 +40,11 @@ class TerrenosListScreen extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.landscape, size: 72, color: AppColors.outlineVariant),
+                          Icon(
+                            Icons.landscape,
+                            size: 72,
+                            color: AppColors.outlineVariant,
+                          ),
                           const SizedBox(height: 16),
                           const Text(
                             'No tienes terrenos registrados',
@@ -54,7 +58,10 @@ class TerrenosListScreen extends StatelessWidget {
                           const Text(
                             'Registra tus parcelas o terrenos de cultivo en Illpe para organizar tus siembras y labores.',
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 14, color: AppColors.textMuted),
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: AppColors.textMuted,
+                            ),
                           ),
                           const SizedBox(height: 24),
                           ElevatedButton.icon(
@@ -88,15 +95,16 @@ class TerrenosListScreen extends StatelessWidget {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (_) => const TerrenoFormScreen(),
-            ),
+            MaterialPageRoute(builder: (_) => const TerrenoFormScreen()),
           );
         },
         backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         icon: const Icon(Icons.add),
-        label: const Text('NUEVO TERRENO', style: TextStyle(fontWeight: FontWeight.bold)),
+        label: const Text(
+          'NUEVO TERRENO',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
     );
   }
@@ -135,7 +143,11 @@ class _TerrenoCard extends StatelessWidget {
                       color: AppColors.primaryContainer,
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: const Icon(Icons.landscape, color: AppColors.primaryDark, size: 28),
+                    child: const Icon(
+                      Icons.landscape,
+                      color: AppColors.primaryDark,
+                      size: 28,
+                    ),
                   ),
                   const SizedBox(width: 14),
                   Expanded(
@@ -153,12 +165,20 @@ class _TerrenoCard extends StatelessWidget {
                         const SizedBox(height: 4),
                         Row(
                           children: [
-                            const Icon(Icons.place, size: 15, color: AppColors.textMuted),
+                            const Icon(
+                              Icons.place,
+                              size: 15,
+                              color: AppColors.textMuted,
+                            ),
                             const SizedBox(width: 4),
                             Expanded(
                               child: Text(
-                                terreno.ubicacion ?? 'Illpe, sector sin especificar',
-                                style: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                                terreno.ubicacion ??
+                                    'Illpe, sector sin especificar',
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  color: AppColors.textSecondary,
+                                ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -169,7 +189,10 @@ class _TerrenoCard extends StatelessWidget {
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.edit_outlined, color: AppColors.primary),
+                    icon: const Icon(
+                      Icons.edit_outlined,
+                      color: AppColors.primary,
+                    ),
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -215,7 +238,11 @@ class _InfoItem extends StatelessWidget {
   final String value;
   final Color color;
 
-  const _InfoItem({required this.label, required this.value, required this.color});
+  const _InfoItem({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -229,7 +256,11 @@ class _InfoItem extends StatelessWidget {
         const SizedBox(height: 2),
         Text(
           value,
-          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: color),
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
         ),
       ],
     );

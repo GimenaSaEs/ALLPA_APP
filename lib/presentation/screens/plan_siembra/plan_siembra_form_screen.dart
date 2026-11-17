@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/utils/date_formatter.dart';
-import '../../../core/utils/validators.dart';
 import '../../../data/models/plan_siembra_model.dart';
 import '../../providers/allpa_provider.dart';
 
@@ -33,7 +32,9 @@ class _PlanSiembraFormScreenState extends State<PlanSiembraFormScreen> {
 
     // Cargar plan existente si lo hay
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final plan = await context.read<AllpaProvider>().getPlanSiembra(widget.cultivoId);
+      final plan = await context.read<AllpaProvider>().getPlanSiembra(
+        widget.cultivoId,
+      );
       if (plan != null && mounted) {
         setState(() {
           _fechaPrevistaCtrl.text = plan.fechaPrevista ?? '';
@@ -65,7 +66,8 @@ class _PlanSiembraFormScreenState extends State<PlanSiembraFormScreen> {
   }
 
   Future<void> _pickDate(TextEditingController ctrl, String title) async {
-    final DateTime initialDate = DateFormatter.parseIso(ctrl.text) ?? DateTime.now();
+    final DateTime initialDate =
+        DateFormatter.parseIso(ctrl.text) ?? DateTime.now();
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: initialDate,
@@ -89,11 +91,17 @@ class _PlanSiembraFormScreenState extends State<PlanSiembraFormScreen> {
 
     final plan = PlanSiembraModel(
       cultivoId: widget.cultivoId,
-      fechaPrevista: _fechaPrevistaCtrl.text.trim().isEmpty ? null : _fechaPrevistaCtrl.text.trim(),
-      fechaReal: _fechaRealCtrl.text.trim().isEmpty ? null : _fechaRealCtrl.text.trim(),
+      fechaPrevista: _fechaPrevistaCtrl.text.trim().isEmpty
+          ? null
+          : _fechaPrevistaCtrl.text.trim(),
+      fechaReal: _fechaRealCtrl.text.trim().isEmpty
+          ? null
+          : _fechaRealCtrl.text.trim(),
       escrito: _planEscrito ? 1 : 0,
       desfaseDias: _desfaseCalculado,
-      observacion: _observacionCtrl.text.trim().isEmpty ? null : _observacionCtrl.text.trim(),
+      observacion: _observacionCtrl.text.trim().isEmpty
+          ? null
+          : _observacionCtrl.text.trim(),
       createdAt: DateTime.now().toIso8601String(),
     );
 
@@ -120,12 +128,12 @@ class _PlanSiembraFormScreenState extends State<PlanSiembraFormScreen> {
   @override
   Widget build(BuildContext context) {
     final prov = context.watch<AllpaProvider>();
-    final cultivo = prov.cultivos.where((c) => c.id == widget.cultivoId).firstOrNull;
+    final cultivo = prov.cultivos
+        .where((c) => c.id == widget.cultivoId)
+        .firstOrNull;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Planificación de Siembra'),
-      ),
+      appBar: AppBar(title: const Text('Planificación de Siembra')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(18),
         child: Form(
@@ -135,7 +143,7 @@ class _PlanSiembraFormScreenState extends State<PlanSiembraFormScreen> {
             children: [
               Card(
                 elevation: 0,
-                color: AppColors.primaryContainer.withOpacity(0.35),
+                color: AppColors.primaryContainer.withValues(alpha: 0.35),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                   side: const BorderSide(color: AppColors.primaryLight),
@@ -144,7 +152,10 @@ class _PlanSiembraFormScreenState extends State<PlanSiembraFormScreen> {
                   padding: const EdgeInsets.all(14),
                   child: Row(
                     children: [
-                      const Icon(Icons.date_range, color: AppColors.primaryDark),
+                      const Icon(
+                        Icons.date_range,
+                        color: AppColors.primaryDark,
+                      ),
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(
@@ -166,13 +177,17 @@ class _PlanSiembraFormScreenState extends State<PlanSiembraFormScreen> {
 
               // Fecha Prevista
               InkWell(
-                onTap: () => _pickDate(_fechaPrevistaCtrl, 'Fecha Prevista de Siembra'),
+                onTap: () =>
+                    _pickDate(_fechaPrevistaCtrl, 'Fecha Prevista de Siembra'),
                 child: IgnorePointer(
                   child: TextFormField(
                     controller: _fechaPrevistaCtrl,
                     decoration: InputDecoration(
                       labelText: 'Fecha Prevista de Siembra (Planificada)',
-                      prefixIcon: const Icon(Icons.calendar_today, color: AppColors.primary),
+                      prefixIcon: const Icon(
+                        Icons.calendar_today,
+                        color: AppColors.primary,
+                      ),
                       helperText: _fechaPrevistaCtrl.text.isNotEmpty
                           ? DateFormatter.toFullDisplay(_fechaPrevistaCtrl.text)
                           : 'Fecha en la que el productor planeó sembrar',
@@ -184,13 +199,19 @@ class _PlanSiembraFormScreenState extends State<PlanSiembraFormScreen> {
 
               // Fecha Real / Efectiva
               InkWell(
-                onTap: () => _pickDate(_fechaRealCtrl, 'Fecha Efectiva / Real de Siembra'),
+                onTap: () => _pickDate(
+                  _fechaRealCtrl,
+                  'Fecha Efectiva / Real de Siembra',
+                ),
                 child: IgnorePointer(
                   child: TextFormField(
                     controller: _fechaRealCtrl,
                     decoration: InputDecoration(
                       labelText: 'Fecha Efectiva de Siembra (Realizada)',
-                      prefixIcon: const Icon(Icons.event_available, color: AppColors.primary),
+                      prefixIcon: const Icon(
+                        Icons.event_available,
+                        color: AppColors.primary,
+                      ),
                       helperText: _fechaRealCtrl.text.isNotEmpty
                           ? DateFormatter.toFullDisplay(_fechaRealCtrl.text)
                           : 'Día en que efectivamente se colocó la semilla',
@@ -207,12 +228,16 @@ class _PlanSiembraFormScreenState extends State<PlanSiembraFormScreen> {
                   decoration: BoxDecoration(
                     color: _desfaseCalculado == 0
                         ? AppColors.primaryContainer
-                        : (_desfaseCalculado! > 0 ? const Color(0xFFFFF3E0) : const Color(0xFFE1F5FE)),
+                        : (_desfaseCalculado! > 0
+                              ? const Color(0xFFFFF3E0)
+                              : const Color(0xFFE1F5FE)),
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
                       color: _desfaseCalculado == 0
                           ? AppColors.primary
-                          : (_desfaseCalculado! > 0 ? AppColors.warning : AppColors.info),
+                          : (_desfaseCalculado! > 0
+                                ? AppColors.warning
+                                : AppColors.info),
                     ),
                   ),
                   child: Row(
@@ -220,10 +245,14 @@ class _PlanSiembraFormScreenState extends State<PlanSiembraFormScreen> {
                       Icon(
                         _desfaseCalculado == 0
                             ? Icons.check_circle
-                            : (_desfaseCalculado! > 0 ? Icons.alarm_on : Icons.fast_forward),
+                            : (_desfaseCalculado! > 0
+                                  ? Icons.alarm_on
+                                  : Icons.fast_forward),
                         color: _desfaseCalculado == 0
                             ? AppColors.primary
-                            : (_desfaseCalculado! > 0 ? AppColors.warning : AppColors.info),
+                            : (_desfaseCalculado! > 0
+                                  ? AppColors.warning
+                                  : AppColors.info),
                         size: 30,
                       ),
                       const SizedBox(width: 14),
@@ -233,16 +262,23 @@ class _PlanSiembraFormScreenState extends State<PlanSiembraFormScreen> {
                           children: [
                             const Text(
                               'INDICADOR: DESFASE DE SIEMBRA',
-                              style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+                              style: TextStyle(
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.5,
+                              ),
                             ),
                             const SizedBox(height: 2),
                             Text(
                               _desfaseCalculado == 0
                                   ? 'Siembra ejecutada puntualmente (0 días de desfase)'
                                   : (_desfaseCalculado! > 0
-                                      ? 'Retraso de +$_desfaseCalculado días respecto a lo previsto'
-                                      : 'Adelanto de $_desfaseCalculado días'),
-                              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                                        ? 'Retraso de +$_desfaseCalculado días respecto a lo previsto'
+                                        : 'Adelanto de $_desfaseCalculado días'),
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ],
                         ),
@@ -255,7 +291,10 @@ class _PlanSiembraFormScreenState extends State<PlanSiembraFormScreen> {
 
               // Existencia de Plan Escrito
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
@@ -269,10 +308,13 @@ class _PlanSiembraFormScreenState extends State<PlanSiembraFormScreen> {
                   ),
                   subtitle: const Text(
                     'Indicador de manejo agronómico: formalización del plan.',
-                    style: TextStyle(fontSize: 12.5, color: AppColors.textMuted),
+                    style: TextStyle(
+                      fontSize: 12.5,
+                      color: AppColors.textMuted,
+                    ),
                   ),
                   value: _planEscrito,
-                  activeColor: AppColors.primary,
+                  activeThumbColor: AppColors.primary,
                   onChanged: (val) {
                     setState(() => _planEscrito = val);
                   },
@@ -286,7 +328,8 @@ class _PlanSiembraFormScreenState extends State<PlanSiembraFormScreen> {
                 maxLines: 3,
                 decoration: const InputDecoration(
                   labelText: 'Observaciones / Causa del desfase',
-                  hintText: 'Ej. Retraso por escasez de lluvia o disponibilidad de yunta/jornales en Illpe.',
+                  hintText:
+                      'Ej. Retraso por escasez de lluvia o disponibilidad de yunta/jornales en Illpe.',
                   prefixIcon: Icon(Icons.comment, color: AppColors.primary),
                 ),
               ),

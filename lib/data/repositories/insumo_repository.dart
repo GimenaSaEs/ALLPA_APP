@@ -1,4 +1,3 @@
-import 'package:sqflite/sqflite.dart';
 import '../../core/constants/input_types.dart';
 import '../../core/database/database_helper.dart';
 import '../models/insumo_model.dart';
@@ -7,7 +6,7 @@ class InsumoRepository {
   final DatabaseHelper _dbHelper;
 
   InsumoRepository({DatabaseHelper? dbHelper})
-      : _dbHelper = dbHelper ?? DatabaseHelper.instance;
+    : _dbHelper = dbHelper ?? DatabaseHelper.instance;
 
   Future<List<InsumoModel>> getAllInsumos() async {
     final db = await _dbHelper.database;
@@ -27,7 +26,8 @@ class InsumoRepository {
 
   Future<List<InsumoModel>> getInsumosByCultivo(int cultivoId) async {
     final db = await _dbHelper.database;
-    final List<Map<String, dynamic>> maps = await db.rawQuery('''
+    final List<Map<String, dynamic>> maps = await db.rawQuery(
+      '''
       SELECT i.*, 
         c.especie as cultivo_especie,
         c.variedad as cultivo_variedad,
@@ -37,14 +37,17 @@ class InsumoRepository {
       JOIN terreno t ON c.terreno_id = t.id
       WHERE i.cultivo_id = ?
       ORDER BY i.fecha DESC, i.id DESC
-    ''', [cultivoId]);
+    ''',
+      [cultivoId],
+    );
 
     return maps.map((m) => InsumoModel.fromMap(m)).toList();
   }
 
   Future<InsumoModel?> getInsumoById(int id) async {
     final db = await _dbHelper.database;
-    final List<Map<String, dynamic>> maps = await db.rawQuery('''
+    final List<Map<String, dynamic>> maps = await db.rawQuery(
+      '''
       SELECT i.*, 
         c.especie as cultivo_especie,
         c.variedad as cultivo_variedad,
@@ -53,7 +56,9 @@ class InsumoRepository {
       JOIN cultivo c ON i.cultivo_id = c.id
       JOIN terreno t ON c.terreno_id = t.id
       WHERE i.id = ?
-    ''', [id]);
+    ''',
+      [id],
+    );
 
     if (maps.isNotEmpty) {
       return InsumoModel.fromMap(maps.first);

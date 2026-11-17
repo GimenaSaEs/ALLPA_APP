@@ -3,7 +3,10 @@ import 'package:intl/intl.dart';
 class DateFormatter {
   static final DateFormat _isoFormat = DateFormat('yyyy-MM-dd');
   static final DateFormat _displayFormat = DateFormat('dd/MM/yyyy');
-  static final DateFormat _fullDisplayFormat = DateFormat("d 'de' MMMM 'de' yyyy", 'es_ES');
+  static final DateFormat _fullDisplayFormat = DateFormat(
+    "d 'de' MMMM 'de' yyyy",
+    'es_ES',
+  );
 
   /// Convierte DateTime a formato ISO para SQLite: 'yyyy-MM-dd'
   static String toIso(DateTime date) {
@@ -40,7 +43,10 @@ class DateFormatter {
 
   /// Calcula el desfase en días entre la fecha prevista y la fecha efectiva de siembra.
   /// Retorna positivo si hubo retraso, 0 si fue puntual, negativo si se adelantó.
-  static int? calculateDelayDays(String? fechaPrevistaStr, String? fechaRealStr) {
+  static int? calculateDelayDays(
+    String? fechaPrevistaStr,
+    String? fechaRealStr,
+  ) {
     final prevista = parseIso(fechaPrevistaStr);
     final real = parseIso(fechaRealStr);
     if (prevista == null || real == null) return null;

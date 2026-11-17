@@ -34,33 +34,39 @@ void main() {
     expect(foreignKeys.single.values.single, 1);
   });
 
-  test('persists linked synthetic records and enforces positive land area',
-      () async {
-    final now = DateTime.utc(2026).toIso8601String();
-    final farmerId = await db.insert('agricultor', {
-      'nombre': 'Persona de prueba',
-      'codigo_local': 'TEST-01',
-      'created_at': now,
-    });
-    final landId = await db.insert('terreno', {
-      'agricultor_id': farmerId,
-      'nombre': 'Lote de prueba',
-      'area_ha': 1.0,
-      'created_at': now,
-    });
-
-    final rows = await db.query('terreno', where: 'id = ?', whereArgs: [landId]);
-    expect(rows.single['agricultor_id'], farmerId);
-    expect(rows.single['area_ha'], 1.0);
-
-    await expectLater(
-      db.insert('terreno', {
-        'agricultor_id': farmerId,
-        'nombre': 'Área inválida',
-        'area_ha': 0,
+  test(
+    'persists linked synthetic records and enforces positive land area',
+    () async {
+      final now = DateTime.utc(2026).toIso8601String();
+      final farmerId = await db.insert('agricultor', {
+        'nombre': 'Persona de prueba',
+        'codigo_local': 'TEST-01',
         'created_at': now,
-      }),
-      throwsA(isA<DatabaseException>()),
-    );
-  });
+      });
+      final landId = await db.insert('terreno', {
+        'agricultor_id': farmerId,
+        'nombre': 'Lote de prueba',
+        'area_ha': 1.0,
+        'created_at': now,
+      });
+
+      final rows = await db.query(
+        'terreno',
+        where: 'id = ?',
+        whereArgs: [landId],
+      );
+      expect(rows.single['agricultor_id'], farmerId);
+      expect(rows.single['area_ha'], 1.0);
+
+      await expectLater(
+        db.insert('terreno', {
+          'agricultor_id': farmerId,
+          'nombre': 'Área inválida',
+          'area_ha': 0,
+          'created_at': now,
+        }),
+        throwsA(isA<DatabaseException>()),
+      );
+    },
+  );
 }

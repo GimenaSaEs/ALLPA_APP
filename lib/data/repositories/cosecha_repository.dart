@@ -1,4 +1,3 @@
-import 'package:sqflite/sqflite.dart';
 import '../../core/database/database_helper.dart';
 import '../../core/utils/calculations.dart';
 import '../models/cosecha_model.dart';
@@ -7,7 +6,7 @@ class CosechaRepository {
   final DatabaseHelper _dbHelper;
 
   CosechaRepository({DatabaseHelper? dbHelper})
-      : _dbHelper = dbHelper ?? DatabaseHelper.instance;
+    : _dbHelper = dbHelper ?? DatabaseHelper.instance;
 
   Future<List<CosechaModel>> getAllCosechas() async {
     final db = await _dbHelper.database;
@@ -27,7 +26,8 @@ class CosechaRepository {
 
   Future<CosechaModel?> getCosechaByCultivoId(int cultivoId) async {
     final db = await _dbHelper.database;
-    final List<Map<String, dynamic>> maps = await db.rawQuery('''
+    final List<Map<String, dynamic>> maps = await db.rawQuery(
+      '''
       SELECT cos.*, 
         c.especie as cultivo_especie,
         c.variedad as cultivo_variedad,
@@ -36,7 +36,9 @@ class CosechaRepository {
       JOIN cultivo c ON cos.cultivo_id = c.id
       JOIN terreno t ON c.terreno_id = t.id
       WHERE cos.cultivo_id = ?
-    ''', [cultivoId]);
+    ''',
+      [cultivoId],
+    );
 
     if (maps.isNotEmpty) {
       return CosechaModel.fromMap(maps.first);
@@ -46,7 +48,8 @@ class CosechaRepository {
 
   Future<CosechaModel?> getCosechaById(int id) async {
     final db = await _dbHelper.database;
-    final List<Map<String, dynamic>> maps = await db.rawQuery('''
+    final List<Map<String, dynamic>> maps = await db.rawQuery(
+      '''
       SELECT cos.*, 
         c.especie as cultivo_especie,
         c.variedad as cultivo_variedad,
@@ -55,7 +58,9 @@ class CosechaRepository {
       JOIN cultivo c ON cos.cultivo_id = c.id
       JOIN terreno t ON c.terreno_id = t.id
       WHERE cos.id = ?
-    ''', [id]);
+    ''',
+      [id],
+    );
 
     if (maps.isNotEmpty) {
       return CosechaModel.fromMap(maps.first);
@@ -72,10 +77,11 @@ class CosechaRepository {
       areaHa: cosecha.areaHa,
     );
 
-    final productividad = AgriculturalCalculations.calculateProductivityPerJornal(
-      produccionKg: cosecha.produccionKg,
-      jornales: cosecha.jornales,
-    );
+    final productividad =
+        AgriculturalCalculations.calculateProductivityPerJornal(
+          produccionKg: cosecha.produccionKg,
+          jornales: cosecha.jornales,
+        );
 
     final toSave = cosecha.copyWith(
       rendimientoKgHa: rendimiento,

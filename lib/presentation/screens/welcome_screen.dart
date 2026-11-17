@@ -34,7 +34,7 @@ class WelcomeScreen extends StatelessWidget {
                       border: Border.all(color: AppColors.primary, width: 3),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.primary.withOpacity(0.2),
+                          color: AppColors.primary.withValues(alpha: 0.2),
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                         ),
@@ -93,10 +93,14 @@ class WelcomeScreen extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.12),
+                            color: AppColors.primary.withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: const Icon(Icons.offline_pin, color: AppColors.primary, size: 28),
+                          child: const Icon(
+                            Icons.offline_pin,
+                            color: AppColors.primary,
+                            size: 28,
+                          ),
                         ),
                         const SizedBox(width: 14),
                         const Expanded(
@@ -104,7 +108,7 @@ class WelcomeScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '100% Funcional Sin Internet',
+                                'Almacenamiento local sin conexión',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -113,7 +117,7 @@ class WelcomeScreen extends StatelessWidget {
                               ),
                               SizedBox(height: 2),
                               Text(
-                                'Diseñado para operar en zonas rurales sin cobertura móvil.',
+                                'Los registros se guardan en este dispositivo mediante SQLite.',
                                 style: TextStyle(
                                   fontSize: 13,
                                   color: AppColors.textSecondary,
@@ -147,7 +151,8 @@ class WelcomeScreen extends StatelessWidget {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => const PerfilScreen(isFirstTime: true),
+                            builder: (_) =>
+                                const PerfilScreen(isFirstTime: true),
                           ),
                         );
                       } else {
@@ -163,18 +168,20 @@ class WelcomeScreen extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
                     child: Text(
-                      provider.agricultor == null ? 'REGISTRAR MI PERFIL' : 'INGRESAR AL PANEL',
-                      style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                      provider.agricultor == null
+                          ? 'REGISTRAR MI PERFIL'
+                          : 'INGRESAR AL PANEL',
+                      style: const TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 12),
                   const Text(
                     'Universidad Continental • Tesis de Ingeniería de Sistemas e Informática',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: AppColors.textMuted,
-                    ),
+                    style: TextStyle(fontSize: 11, color: AppColors.textMuted),
                   ),
                 ],
               ),
@@ -200,7 +207,11 @@ class _FeatureMini extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           text,
-          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.textSecondary),
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textSecondary,
+          ),
         ),
       ],
     );

@@ -49,7 +49,8 @@ class _LaborFormScreenState extends State<LaborFormScreen> {
   }
 
   Future<void> _pickDate() async {
-    final DateTime initialDate = DateFormatter.parseIso(_fechaCtrl.text) ?? DateTime.now();
+    final DateTime initialDate =
+        DateFormatter.parseIso(_fechaCtrl.text) ?? DateTime.now();
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: initialDate,
@@ -69,12 +70,16 @@ class _LaborFormScreenState extends State<LaborFormScreen> {
     if (!_formKey.currentState!.validate()) return;
     if (_selectedCultivoId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Debe seleccionar el cultivo correspondiente.')),
+        const SnackBar(
+          content: Text('Debe seleccionar el cultivo correspondiente.'),
+        ),
       );
       return;
     }
 
-    final jornales = double.parse(_jornalesCtrl.text.trim().replaceAll(',', '.'));
+    final jornales = double.parse(
+      _jornalesCtrl.text.trim().replaceAll(',', '.'),
+    );
     final prov = context.read<AllpaProvider>();
 
     final nuevaLabor = LaborModel(
@@ -93,7 +98,9 @@ class _LaborFormScreenState extends State<LaborFormScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            widget.labor == null ? 'Labor registrada con éxito.' : 'Labor actualizada con éxito.',
+            widget.labor == null
+                ? 'Labor registrada con éxito.'
+                : 'Labor actualizada con éxito.',
           ),
           backgroundColor: AppColors.success,
         ),
@@ -124,7 +131,11 @@ class _LaborFormScreenState extends State<LaborFormScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.warning_amber_rounded, size: 64, color: AppColors.warning),
+                const Icon(
+                  Icons.warning_amber_rounded,
+                  size: 64,
+                  color: AppColors.warning,
+                ),
                 const SizedBox(height: 16),
                 const Text(
                   'No hay cultivos activos',
@@ -151,7 +162,9 @@ class _LaborFormScreenState extends State<LaborFormScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(esEdicion ? 'Editar Labor Agrícola' : 'Registro de Labor Agrícola'),
+        title: Text(
+          esEdicion ? 'Editar Labor Agrícola' : 'Registro de Labor Agrícola',
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(18),
@@ -162,7 +175,7 @@ class _LaborFormScreenState extends State<LaborFormScreen> {
             children: [
               Card(
                 elevation: 0,
-                color: AppColors.primaryContainer.withOpacity(0.35),
+                color: AppColors.primaryContainer.withValues(alpha: 0.35),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                   side: const BorderSide(color: AppColors.primaryLight),
@@ -191,7 +204,7 @@ class _LaborFormScreenState extends State<LaborFormScreen> {
 
               // Selector de Cultivo
               DropdownButtonFormField<int>(
-                value: _selectedCultivoId,
+                initialValue: _selectedCultivoId,
                 decoration: const InputDecoration(
                   labelText: 'Cultivo Asociado *',
                   prefixIcon: Icon(Icons.eco, color: AppColors.primary),
@@ -199,7 +212,9 @@ class _LaborFormScreenState extends State<LaborFormScreen> {
                 items: cultivos.map((c) {
                   return DropdownMenuItem<int>(
                     value: c.id,
-                    child: Text('${c.especie} (${c.variedad ?? "Común"}) en ${c.terrenoNombre}'),
+                    child: Text(
+                      '${c.especie} (${c.variedad ?? "Común"}) en ${c.terrenoNombre}',
+                    ),
                   );
                 }).toList(),
                 onChanged: esEdicion
@@ -213,7 +228,7 @@ class _LaborFormScreenState extends State<LaborFormScreen> {
 
               // Tipo de labor
               DropdownButtonFormField<String>(
-                value: _selectedTipo,
+                initialValue: _selectedTipo,
                 decoration: const InputDecoration(
                   labelText: 'Tipo de Labor Agrícola *',
                   prefixIcon: Icon(Icons.agriculture, color: AppColors.primary),
@@ -238,10 +253,16 @@ class _LaborFormScreenState extends State<LaborFormScreen> {
                     controller: _fechaCtrl,
                     decoration: InputDecoration(
                       labelText: 'Fecha de la Labor *',
-                      prefixIcon: const Icon(Icons.calendar_month, color: AppColors.primary),
+                      prefixIcon: const Icon(
+                        Icons.calendar_month,
+                        color: AppColors.primary,
+                      ),
                       helperText: DateFormatter.toFullDisplay(_fechaCtrl.text),
                     ),
-                    validator: (v) => Validators.requiredField(v, message: 'Seleccione la fecha'),
+                    validator: (v) => Validators.requiredField(
+                      v,
+                      message: 'Seleccione la fecha',
+                    ),
                   ),
                 ),
               ),
@@ -250,17 +271,21 @@ class _LaborFormScreenState extends State<LaborFormScreen> {
               // Jornales familiares
               TextFormField(
                 controller: _jornalesCtrl,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
                 decoration: const InputDecoration(
                   labelText: 'Jornales Familiares Dedicados *',
                   hintText: 'Ej. 1.0, 2.5, 4.0',
                   suffixText: 'jornales',
                   prefixIcon: Icon(Icons.people, color: AppColors.primary),
-                  helperText: 'Días de trabajo dedicados por miembros de la familia',
+                  helperText:
+                      'Días de trabajo dedicados por miembros de la familia',
                 ),
                 validator: (v) => Validators.nonNegativeNumber(
                   v,
-                  message: 'Ingrese una cantidad válida de jornales (0 o mayor)',
+                  message:
+                      'Ingrese una cantidad válida de jornales (0 o mayor)',
                 ),
               ),
               const SizedBox(height: 16),
@@ -271,7 +296,8 @@ class _LaborFormScreenState extends State<LaborFormScreen> {
                 maxLines: 3,
                 decoration: const InputDecoration(
                   labelText: 'Observaciones / Detalle',
-                  hintText: 'Ej. Se usó yunta para el aporque; participaron 2 familiares.',
+                  hintText:
+                      'Ej. Se usó yunta para el aporque; participaron 2 familiares.',
                   prefixIcon: Icon(Icons.notes, color: AppColors.primary),
                 ),
               ),

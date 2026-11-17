@@ -1,26 +1,38 @@
-# Diagramas derivados del código
+# Diagramas derivados de la implementación
 
-Estos diagramas reflejan clases y relaciones de persistencia presentes. No afirman que los flujos estén accesibles desde la app ejecutable.
-
-```mermaid
-flowchart LR
-  UI[Pantallas parciales] --> P[AllpaProvider]
-  P --> R[Repositorios]
-  R --> H[DatabaseHelper]
-  H --> M[DatabaseMigrations]
-  H --> DB[(SQLite local)]
-  R --> C[Consultas bitácora e indicadores]
-  C --> P
-```
+## Componentes y flujo
 
 ```mermaid
 flowchart TD
-  A[Inicio de alta] --> B{Formulario y validadores}
-  B -->|válido| C[Provider guarda]
-  B -->|inválido| D[Mensaje de validación]
-  C --> E[Repositorio]
-  E --> F[(SQLite)]
-  F --> G[Recarga de estado]
+  M[main.dart] --> P[AllpaProvider]
+  P --> I{Perfil guardado?}
+  I -->|No| W[WelcomeScreen]
+  W --> F[PerfilScreen]
+  I -->|Sí| H[HomeDashboardScreen]
+  F --> H
+  H --> T[Terrenos]
+  H --> C[Cultivos]
+  H --> B[Bitácora]
+  H --> R[Indicadores]
+  C --> D[Detalle de cultivo]
+  D --> PS[Plan de siembra]
+  D --> L[Labores]
+  D --> N[Insumos]
+  D --> CO[Cosecha]
+  P --> RE[Repositorios]
+  RE --> DB[(SQLite local)]
 ```
 
-El modelo entidad-relación está en `../02_base_datos/ESQUEMA_SQLITE.md`. El diagrama de casos de uso aún es una especificación de requerimientos: perfil, terrenos, cultivos/siembra, labores/insumos, bitácora y cosecha; su aceptación debe comprobarse luego de integrar la navegación.
+## Entidades y relaciones
+
+```mermaid
+erDiagram
+  AGRICULTOR ||--o{ TERRENO : posee
+  TERRENO ||--o{ CULTIVO : contiene
+  CULTIVO ||--o| PLAN_SIEMBRA : programa
+  CULTIVO ||--o{ LABOR : registra
+  CULTIVO ||--o{ INSUMO : consume
+  CULTIVO ||--o| COSECHA : produce
+```
+
+Los diagramas reflejan componentes y relaciones observables en el código y el esquema SQLite. La prueba Android OFF-01 confirma persistencia del perfil sintético tras relanzar sin red (EV-13), no la persistencia de todas las entidades ni aceptación de usuarios. Para el detalle de verificaciones, consulte `../05_pruebas/RESULTADOS.md`.

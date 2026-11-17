@@ -18,7 +18,8 @@ class CultivoDetailScreen extends StatefulWidget {
   State<CultivoDetailScreen> createState() => _CultivoDetailScreenState();
 }
 
-class _CultivoDetailScreenState extends State<CultivoDetailScreen> with SingleTickerProviderStateMixin {
+class _CultivoDetailScreenState extends State<CultivoDetailScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -55,10 +56,10 @@ class _CultivoDetailScreenState extends State<CultivoDetailScreen> with SingleTi
       ),
     );
 
-    if (confirmar == true && mounted) {
+    if (confirmar == true && context.mounted) {
       try {
         await context.read<AllpaProvider>().deleteCultivo(widget.cultivoId);
-        if (!mounted) return;
+        if (!context.mounted) return;
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -67,7 +68,7 @@ class _CultivoDetailScreenState extends State<CultivoDetailScreen> with SingleTi
           ),
         );
       } catch (e) {
-        if (!mounted) return;
+        if (!context.mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error al eliminar: $e'),
@@ -81,7 +82,9 @@ class _CultivoDetailScreenState extends State<CultivoDetailScreen> with SingleTi
   @override
   Widget build(BuildContext context) {
     final prov = context.watch<AllpaProvider>();
-    final cultivo = prov.cultivos.where((c) => c.id == widget.cultivoId).firstOrNull;
+    final cultivo = prov.cultivos
+        .where((c) => c.id == widget.cultivoId)
+        .firstOrNull;
 
     if (cultivo == null) {
       return Scaffold(
@@ -90,12 +93,21 @@ class _CultivoDetailScreenState extends State<CultivoDetailScreen> with SingleTi
       );
     }
 
-    final labores = prov.labores.where((l) => l.cultivoId == widget.cultivoId).toList();
-    final insumos = prov.insumos.where((i) => i.cultivoId == widget.cultivoId).toList();
-    final cosecha = prov.cosechas.where((cos) => cos.cultivoId == widget.cultivoId).firstOrNull;
+    final labores = prov.labores
+        .where((l) => l.cultivoId == widget.cultivoId)
+        .toList();
+    final insumos = prov.insumos
+        .where((i) => i.cultivoId == widget.cultivoId)
+        .toList();
+    final cosecha = prov.cosechas
+        .where((cos) => cos.cultivoId == widget.cultivoId)
+        .firstOrNull;
 
     // Calcular jornales totales de labores
-    final totalJornalesLabores = labores.fold<double>(0.0, (sum, l) => sum + l.jornales);
+    final totalJornalesLabores = labores.fold<double>(
+      0.0,
+      (sum, l) => sum + l.jornales,
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -125,7 +137,10 @@ class _CultivoDetailScreenState extends State<CultivoDetailScreen> with SingleTi
           indicatorWeight: 3,
           labelColor: Colors.white,
           unselectedLabelColor: Colors.white70,
-          labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13.5),
+          labelStyle: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 13.5,
+          ),
           tabs: const [
             Tab(icon: Icon(Icons.info_outline, size: 20), text: 'Resumen'),
             Tab(icon: Icon(Icons.agriculture, size: 20), text: 'Labores'),
@@ -167,7 +182,7 @@ class _CultivoDetailScreenState extends State<CultivoDetailScreen> with SingleTi
               color: Colors.white,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: const Color(0xFFE0E5DC), width: 1.2),
-            ],
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -179,7 +194,11 @@ class _CultivoDetailScreenState extends State<CultivoDetailScreen> with SingleTi
                         color: AppColors.primaryContainer,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Icon(Icons.eco, size: 30, color: AppColors.primaryDark),
+                      child: const Icon(
+                        Icons.eco,
+                        size: 30,
+                        color: AppColors.primaryDark,
+                      ),
                     ),
                     const SizedBox(width: 14),
                     Expanded(
@@ -188,18 +207,27 @@ class _CultivoDetailScreenState extends State<CultivoDetailScreen> with SingleTi
                         children: [
                           Text(
                             '${cultivo.especie} (${cultivo.variedad ?? "Común"})',
-                            style: const TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           const SizedBox(height: 2),
                           Text(
                             'Terreno: ${cultivo.terrenoNombre ?? "Terreno de Illpe"}',
-                            style: const TextStyle(fontSize: 14, color: AppColors.textSecondary),
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: AppColors.textSecondary,
+                            ),
                           ),
                         ],
                       ),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: cultivo.estado == 'Cosechado'
                             ? AppColors.tertiaryContainer
@@ -273,7 +301,8 @@ class _CultivoDetailScreenState extends State<CultivoDetailScreen> with SingleTi
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => LaborFormScreen(cultivoId: widget.cultivoId),
+                        builder: (_) =>
+                            LaborFormScreen(cultivoId: widget.cultivoId),
                       ),
                     );
                   },
@@ -288,7 +317,8 @@ class _CultivoDetailScreenState extends State<CultivoDetailScreen> with SingleTi
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => InsumoFormScreen(cultivoId: widget.cultivoId),
+                        builder: (_) =>
+                            InsumoFormScreen(cultivoId: widget.cultivoId),
                       ),
                     );
                   },
@@ -304,8 +334,11 @@ class _CultivoDetailScreenState extends State<CultivoDetailScreen> with SingleTi
   }
 
   Widget _buildPlanSiembraCard(BuildContext context, dynamic cultivo) {
-    final tienePrevista = cultivo.fechaPrevista != null && cultivo.fechaPrevista.toString().isNotEmpty;
-    final tieneReal = cultivo.fechaReal != null && cultivo.fechaReal.toString().isNotEmpty;
+    final tienePrevista =
+        cultivo.fechaPrevista != null &&
+        cultivo.fechaPrevista.toString().isNotEmpty;
+    final tieneReal =
+        cultivo.fechaReal != null && cultivo.fechaReal.toString().isNotEmpty;
     final desfase = cultivo.desfaseDias;
 
     Color badgeColor = AppColors.primary;
@@ -351,11 +384,14 @@ class _CultivoDetailScreenState extends State<CultivoDetailScreen> with SingleTi
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => PlanSiembraFormScreen(cultivoId: widget.cultivoId),
+                      builder: (_) =>
+                          PlanSiembraFormScreen(cultivoId: widget.cultivoId),
                     ),
                   );
                 },
-                child: Text(tienePrevista || tieneReal ? 'MODIFICAR' : 'CONFIGURAR'),
+                child: Text(
+                  tienePrevista || tieneReal ? 'MODIFICAR' : 'CONFIGURAR',
+                ),
               ),
             ],
           ),
@@ -366,10 +402,19 @@ class _CultivoDetailScreenState extends State<CultivoDetailScreen> with SingleTi
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Fecha Prevista', style: TextStyle(fontSize: 12, color: AppColors.textMuted)),
+                    const Text(
+                      'Fecha Prevista',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textMuted,
+                      ),
+                    ),
                     Text(
                       DateFormatter.toDisplay(cultivo.fechaPrevista),
-                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ],
                 ),
@@ -378,10 +423,19 @@ class _CultivoDetailScreenState extends State<CultivoDetailScreen> with SingleTi
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Fecha Efectiva', style: TextStyle(fontSize: 12, color: AppColors.textMuted)),
+                    const Text(
+                      'Fecha Efectiva',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textMuted,
+                      ),
+                    ),
                     Text(
                       DateFormatter.toDisplay(cultivo.fechaReal),
-                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ],
                 ),
@@ -392,9 +446,9 @@ class _CultivoDetailScreenState extends State<CultivoDetailScreen> with SingleTi
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: badgeColor.withOpacity(0.12),
+              color: badgeColor.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: badgeColor.withOpacity(0.4)),
+              border: Border.all(color: badgeColor.withValues(alpha: 0.4)),
             ),
             child: Row(
               children: [
@@ -405,7 +459,11 @@ class _CultivoDetailScreenState extends State<CultivoDetailScreen> with SingleTi
                     desfase != null
                         ? 'Indicador de Manejo: $badgeText'
                         : 'Plan sin fechas completas para calcular desfase.',
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: badgeColor),
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: badgeColor,
+                    ),
                   ),
                 ),
               ],
@@ -504,7 +562,11 @@ class _CultivoDetailScreenState extends State<CultivoDetailScreen> with SingleTi
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.handyman, size: 60, color: AppColors.outlineVariant),
+              const Icon(
+                Icons.handyman,
+                size: 60,
+                color: AppColors.outlineVariant,
+              ),
               const SizedBox(height: 12),
               const Text(
                 'No hay labores registradas para este cultivo',
@@ -522,7 +584,8 @@ class _CultivoDetailScreenState extends State<CultivoDetailScreen> with SingleTi
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => LaborFormScreen(cultivoId: widget.cultivoId),
+                      builder: (_) =>
+                          LaborFormScreen(cultivoId: widget.cultivoId),
                     ),
                   );
                 },
@@ -546,11 +609,18 @@ class _CultivoDetailScreenState extends State<CultivoDetailScreen> with SingleTi
             child: ListTile(
               leading: CircleAvatar(
                 backgroundColor: AppColors.primaryContainer,
-                child: const Icon(Icons.agriculture, color: AppColors.primaryDark),
+                child: const Icon(
+                  Icons.agriculture,
+                  color: AppColors.primaryDark,
+                ),
               ),
-              title: Text(l.tipo, style: const TextStyle(fontWeight: FontWeight.bold)),
+              title: Text(
+                l.tipo,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
               subtitle: Text(
-                'Fecha: ${DateFormatter.toDisplay(l.fecha)} • ${l.jornales} jornales familiares\n${l.nota ?? ""}'.trim(),
+                'Fecha: ${DateFormatter.toDisplay(l.fecha)} • ${l.jornales} jornales familiares\n${l.nota ?? ""}'
+                    .trim(),
               ),
               trailing: IconButton(
                 icon: const Icon(Icons.edit_outlined, size: 20),
@@ -595,7 +665,11 @@ class _CultivoDetailScreenState extends State<CultivoDetailScreen> with SingleTi
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.inventory_2_outlined, size: 60, color: AppColors.outlineVariant),
+              const Icon(
+                Icons.inventory_2_outlined,
+                size: 60,
+                color: AppColors.outlineVariant,
+              ),
               const SizedBox(height: 12),
               const Text(
                 'No hay insumos registrados para este cultivo',
@@ -613,7 +687,8 @@ class _CultivoDetailScreenState extends State<CultivoDetailScreen> with SingleTi
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => InsumoFormScreen(cultivoId: widget.cultivoId),
+                      builder: (_) =>
+                          InsumoFormScreen(cultivoId: widget.cultivoId),
                     ),
                   );
                 },
@@ -639,7 +714,10 @@ class _CultivoDetailScreenState extends State<CultivoDetailScreen> with SingleTi
                 backgroundColor: AppColors.secondaryContainer,
                 child: const Icon(Icons.science, color: AppColors.secondary),
               ),
-              title: Text('${ins.tipo}: ${ins.nombre}', style: const TextStyle(fontWeight: FontWeight.bold)),
+              title: Text(
+                '${ins.tipo}: ${ins.nombre}',
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
               subtitle: Text(
                 'Cantidad: ${ins.cantidad} ${ins.unidad} • Fecha: ${DateFormatter.toDisplay(ins.fecha)}',
               ),
@@ -684,15 +762,29 @@ class _MetricColumn extends StatelessWidget {
   final String value;
   final Color color;
 
-  const _MetricColumn({required this.label, required this.value, required this.color});
+  const _MetricColumn({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(label, style: const TextStyle(fontSize: 12, color: AppColors.textMuted)),
+        Text(
+          label,
+          style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
+        ),
         const SizedBox(height: 4),
-        Text(value, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: color)),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
+        ),
       ],
     );
   }

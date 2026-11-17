@@ -1,19 +1,21 @@
-# Capturas de pantalla — evidencias pendientes
+# Evidencias de pantalla
 
-La tesis suministrada enumera seis evidencias EV-01 a EV-06 (ver Anexo 09 de `thesis_extracted_specs.md`); no se localizaron capturas reales del aplicativo. Se reservan trece posiciones conforme al encargo. **No son evidencias hasta reemplazarlas por capturas de ejecución real**, con datos ficticios, versión, dispositivo, fecha y descripción.
+Las capturas con sufijo `.png` son fotografías de pantalla tomadas directamente en el dispositivo durante la ejecución de ALLPA. No se usan prototipos como evidencia.
 
-EV-01 Inicio y acceso (solicitada en tesis)
-EV-02 Registro de terrenos (solicitada)
-EV-03 Programación de siembra (solicitada)
-EV-04 Registro de labores e insumos (solicitada)
-EV-05 Bitácora sin señal (solicitada)
-EV-06 Cosecha / reportes (solicitada)
-EV-07 Lista/detalle de cultivos (pantalla parcial en código)
-EV-08 Formulario de cultivo (pantalla parcial en código)
-EV-09 Perfil (pantalla parcial en código)
-EV-10 Detalle de terreno (pantalla parcial en código)
-EV-11 Exportación CSV (función de provider, interfaz no comprobada)
-EV-12 Indicadores (repositorio/clase, pantalla no localizada)
-EV-13 Persistencia tras reinicio en modo avión (prueba no ejecutada)
+| Evidencia | Pantalla / propósito | Estado |
+|---|---|---|
+| EV-01 | Bienvenida de ALLPA en primera ejecución | Real; Samsung SM-A155M, Android 14. Ver `EV-01_inicio.md` y `EV-01_inicio.png`. |
+| EV-02 | Registro de terrenos | Pendiente |
+| EV-03 | Programación de siembra | Pendiente |
+| EV-04 | Registro de labores e insumos | Pendiente |
+| EV-05 | Bitácora sin señal | Pendiente |
+| EV-06 | Cosecha / reportes | Pendiente |
+| EV-07 | Lista/detalle de cultivos | Pendiente |
+| EV-08 | Formulario de cultivo | Pendiente |
+| EV-09 | Perfil | Pendiente |
+| EV-10 | Detalle de terreno | Pendiente |
+| EV-11 | Exportación CSV | Pendiente |
+| EV-12 | Indicadores | Pendiente |
+| EV-13 | Panel tras reinicio de ALLPA sin red | Real; Samsung SM-A155M, Android 14. Confirma recuperación del perfil sintético local. Ver `EV-13_persistencia_sin_red.md` y `.png`. |
 
-Cada archivo `EV-XX_PENDIENTE.md` registra el contenido esperado. Ninguna imagen de prototipo o mockup debe presentarse como captura de funcionamiento.
+La prueba EV-13 se limita a reiniciar la app con Wi-Fi y datos móviles desactivados y comprobar el perfil de demostración. No acredita cada módulo ni cada entidad. Para incorporar nuevas capturas, usar registros sintéticos y añadir fecha, dispositivo, versión, pasos y objetivo de verificación.

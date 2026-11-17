@@ -1,30 +1,49 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
 
 import 'package:allpa/main.dart';
+import 'package:allpa/presentation/providers/allpa_provider.dart';
+import 'package:allpa/presentation/screens/home_dashboard_screen.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('opens the ALLPA first-run welcome screen', (tester) async {
+    await tester.pumpWidget(const MyApp(initializeData: false));
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    expect(find.text('ALLPA'), findsOneWidget);
+    expect(find.text('Gestión de Cultivos Agrícolas'), findsOneWidget);
+    expect(find.text('REGISTRAR MI PERFIL'), findsOneWidget);
+    expect(find.text('Flutter Demo Home Page'), findsNothing);
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  testWidgets('welcome screen opens the producer profile form', (tester) async {
+    await tester.pumpWidget(const MyApp(initializeData: false));
+    await tester.tap(find.text('REGISTRAR MI PERFIL'));
+    await tester.pumpAndSettle();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('Registro de Productor'), findsOneWidget);
+    expect(find.text('GUARDAR PERFIL'), findsOneWidget);
+  });
+
+  testWidgets('dashboard exposes ALLPA modules through navigation', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      ChangeNotifierProvider(
+        create: (_) => AllpaProvider(),
+        child: const MaterialApp(home: HomeDashboardScreen()),
+      ),
+    );
+
+    expect(find.text('ALLPA'), findsNWidgets(2));
+    expect(find.text('Resumen de campaña'), findsOneWidget);
+
+    await tester.tap(find.text('Terrenos').last);
+    await tester.pumpAndSettle();
+    expect(find.text('Mis Terrenos Agrícolas'), findsOneWidget);
+
+    await tester.tap(find.text('Cultivos').last);
+    await tester.pumpAndSettle();
+    expect(find.text('Aún no hay cultivos registrados'), findsOneWidget);
   });
 }

@@ -115,13 +115,25 @@ class DatabaseMigrations {
     ''');
 
     // Índices de optimización para búsquedas y consultas de bitácora
-    await db.execute('CREATE INDEX idx_terreno_agricultor ON terreno(agricultor_id);');
-    await db.execute('CREATE INDEX idx_cultivo_terreno ON cultivo(terreno_id);');
-    await db.execute('CREATE INDEX idx_labor_cultivo_fecha ON labor(cultivo_id, fecha);');
-    await db.execute('CREATE INDEX idx_insumo_cultivo_fecha ON insumo(cultivo_id, fecha);');
+    await db.execute(
+      'CREATE INDEX idx_terreno_agricultor ON terreno(agricultor_id);',
+    );
+    await db.execute(
+      'CREATE INDEX idx_cultivo_terreno ON cultivo(terreno_id);',
+    );
+    await db.execute(
+      'CREATE INDEX idx_labor_cultivo_fecha ON labor(cultivo_id, fecha);',
+    );
+    await db.execute(
+      'CREATE INDEX idx_insumo_cultivo_fecha ON insumo(cultivo_id, fecha);',
+    );
   }
 
-  static Future<void> onUpgrade(Database db, int oldVersion, int newVersion) async {
+  static Future<void> onUpgrade(
+    Database db,
+    int oldVersion,
+    int newVersion,
+  ) async {
     // Soporte para futuras migraciones incrementales
     if (oldVersion < 2) {
       // Futuras migraciones v2

@@ -1,68 +1,64 @@
-# ALLPA — gestión local de cultivos
+# ALLPA — gestión local de cultivos agrícolas
 
-Aplicación Flutter en desarrollo para registrar información agrícola localmente con SQLite. Este repositorio contiene modelos, repositorios, pantallas parciales y el esquema de datos. **El estado actual todavía no constituye una aplicación funcional integrada:** `lib/main.dart` conserva la plantilla de contador Flutter; las pantallas ALLPA no están conectadas y hay imports a pantallas ausentes. Consulte [limitaciones](documentacion_tesis/08_manual_tecnico/estado_actual.md) antes de interpretar el APK o las funcionalidades descritas en los documentos.
+Aplicación móvil Flutter para registrar y consultar información agrícola con SQLite local. En una instalación nueva se abre la bienvenida de ALLPA para crear el perfil; luego se presenta el panel con terrenos, cultivos, bitácora, indicadores y perfil.
 
 ## Requisitos
 
-- Flutter SDK compatible con Dart `^3.11.5` (revise `flutter --version`).
-- Android Studio/Android SDK y JDK 17 para Android.
-- Git para clonar el código.
+- Flutter 3.41.x y Dart 3.11.x (el `pubspec.yaml` declara Dart `^3.11.5`).
+- Android Studio, Android SDK y JDK 17 para compilar Android.
+- Dispositivo Android con depuración USB o emulador para instalar y verificar la app.
 
-## Preparar y ejecutar
+## Instalación y ejecución
 
 ```powershell
-cd allpa
 flutter pub get
-flutter analyze
 flutter run
 ```
 
-`flutter run` ejecuta la aplicación configurada en `lib/main.dart`; por ahora muestra la plantilla contador, no el flujo ALLPA. En la revisión del 2026-11-17, `flutter analyze` reportó 106 hallazgos; `flutter test` pasó 3 pruebas (incluye SQLite en memoria) y el APK debug compiló. Los resultados y límites constan en `documentacion_tesis/05_pruebas/RESULTADOS.md`.
+Para elegir un dispositivo: `flutter devices` y `flutter run -d <device-id>`.
 
-## Arquitectura del código disponible
+## Módulos
 
-- `lib/core`: SQLite/migraciones, tema, constantes y utilidades de validación, cálculo, fechas y CSV.
-- `lib/data/models`: modelos de agricultor, terreno, cultivo, siembra, labor, insumo, cosecha e indicadores.
-- `lib/data/repositories`: acceso SQLite y consultas de bitácora e indicadores.
-- `lib/presentation/providers`: estado de aplicación con Provider.
-- `lib/presentation/screens`: formularios y vistas parciales; varias referencias/integraciones están incompletas.
-- `android/`: proyecto Gradle Kotlin DSL y manifiestos Android.
+- Perfil local de agricultor.
+- Registro/listado/detalle de terrenos y cultivos.
+- Plan de siembra, labores e insumos desde el detalle del cultivo.
+- Cosecha con cálculo de rendimiento y productividad laboral.
+- Bitácora consolidada con filtros y copia de CSV.
+- Indicadores de campaña y exportación CSV al portapapeles.
 
-El esquema SQLite ejecutable está definido en `lib/core/database/database_migrations.dart`; la descripción legible está en `documentacion_tesis/02_base_datos/ESQUEMA_SQLITE.md`. SQLite local no requiere red, pero la operación sin conexión de las pantallas no se ha validado.
+## Arquitectura y datos
 
-## Comandos de validación y APK
+- `lib/core`: SQLite, migraciones, tema, constantes y validaciones/cálculos.
+- `lib/data/models` y `lib/data/repositories`: modelos y acceso a datos.
+- `lib/presentation/providers`: estado compartido (`AllpaProvider`).
+- `lib/presentation/screens` y `widgets`: interfaz.
+- `android/`: configuración Gradle y manifiesto Android.
+
+La app usa `sqflite` sin backend ni sincronización remota. Esquema y relaciones: [documentación SQLite](documentacion_tesis/02_base_datos/ESQUEMA_SQLITE.md). La carpeta [documentacion_tesis](documentacion_tesis/) contiene arquitectura, diagramas, capturas verificadas/pendientes, pruebas, trazabilidad y manuales.
+
+## Validación y APK
 
 ```powershell
 flutter analyze
-flutter test
+flutter test --reporter expanded
 flutter build apk --debug
 ```
 
-El APK debug (si la compilación termina correctamente) se genera en `build/app/outputs/flutter-apk/app-debug.apk`. Un APK generado desde el estado actual solo empaqueta la app contador. No distribuir como versión de ALLPA ni como prueba de funcionamiento agrícola.
+En la verificación del 17-11-2026, `flutter analyze` no reportó problemas, pasaron 5 pruebas automatizadas y el APK debug se generó correctamente en `build/app/outputs/flutter-apk/app-debug.apk`. También se instaló y abrió en Samsung SM-A155M Android 14. OFF-01 verificó que un perfil sintético reaparece tras forzar cierre y relanzar con Wi-Fi/datos móviles apagados. Esta comprobación no acredita el CRUD de todas las entidades. Resultados y límites: [RESULTADOS.md](documentacion_tesis/05_pruebas/RESULTADOS.md).
 
-## Pruebas
+El APK es debug y no corresponde a una distribución release firmada. Ruta: `build/app/outputs/flutter-apk/app-debug.apk` (el directorio `build/` está excluido por `.gitignore`). Para regenerar: `flutter build apk --debug`.
 
-Consulte `documentacion_tesis/05_pruebas/RESULTADOS.md` para comandos ejecutados y resultados observados. El test inicial `test/widget_test.dart` aún espera un contador y no verifica funciones agrícolas ni SQLite. No se declara cobertura porcentual.
+## Datos y privacidad
 
-## Documentación de tesis
-
-La carpeta `documentacion_tesis/` organiza arquitectura, esquema, diagramas, evidencias pendientes, pruebas, trazabilidad y manuales. `INFORME_TECNICO_TESIS.md` resume los módulos y su estado para apoyar la actualización del Capítulo III. Las carpetas EV de capturas están reservadas; no se incluyen imágenes simuladas como evidencia real.
-
-## Privacidad y publicación
-
-No agregue datos identificables de agricultores, bases reales, archivos de firma, credenciales ni secretos. `.gitignore` excluye bases SQLite locales, archivos de firma y configuración local. Revise los cambios con `git status` y haga una inspección de secretos antes de publicar.
+No incluir bases reales, contraseñas, claves privadas ni archivos de firma. `.gitignore` excluye bases locales, propiedades privadas y materiales de firma. La evidencia Android usa un perfil sintético sin DNI ni teléfono.
 
 ## Publicación en GitHub
 
-Este directorio no estaba inicializado como repositorio Git y no se encontró un remoto ni configuración de publicación confirmada durante la preparación. Tras revisar el proyecto y crear un repositorio vacío en GitHub:
+El repositorio local está en la rama `main`; no se ha publicado. Cree un repositorio vacío en GitHub, configure autenticación y ejecute:
 
 ```powershell
-git init -b main
-git add .
-git status --short
-git commit -m "Preparar documentación y proyecto ALLPA"
 git remote add origin https://github.com/USUARIO/REPOSITORIO.git
 git push -u origin main
 ```
 
-Sustituya la URL por la del repositorio autorizado. El `git status` debe confirmar que no se incluyen datos privados ni claves. No se ha publicado este código.
+Antes de subir, revise `git status` y confirme que no haya datos personales o secretos.

@@ -1,3 +1,4 @@
+import 'package:sqflite/sqflite.dart';
 import '../../core/constants/input_types.dart';
 import '../../core/database/database_helper.dart';
 import '../../core/utils/calculations.dart';
@@ -43,7 +44,7 @@ class IndicadoresRepository {
   final DatabaseHelper _dbHelper;
 
   IndicadoresRepository({DatabaseHelper? dbHelper})
-      : _dbHelper = dbHelper ?? DatabaseHelper.instance;
+    : _dbHelper = dbHelper ?? DatabaseHelper.instance;
 
   Future<List<IndicadoresModel>> getIndicadoresPorCultivo() async {
     final db = await _dbHelper.database;
@@ -85,10 +86,13 @@ class IndicadoresRepository {
       final areaSembrada = (r['area_sembrada_ha'] as num).toDouble();
 
       // Sumar semillas en kg para este cultivo
-      final insumosRows = await db.rawQuery('''
+      final insumosRows = await db.rawQuery(
+        '''
         SELECT cantidad, unidad FROM insumo 
         WHERE cultivo_id = ? AND LOWER(tipo) LIKE '%semilla%'
-      ''', [cultivoId]);
+      ''',
+        [cultivoId],
+      );
 
       double totalSemillaKg = 0.0;
       for (final ins in insumosRows) {
@@ -98,22 +102,29 @@ class IndicadoresRepository {
       }
 
       // Sumar jornales familiares (labores + cosecha)
-      final laboresRows = await db.rawQuery('''
+      final laboresRows = await db.rawQuery(
+        '''
         SELECT SUM(jornales) as total FROM labor WHERE cultivo_id = ?
-      ''', [cultivoId]);
-      final double jornalesLabores = (laboresRows.first['total'] as num?)?.toDouble() ?? 0.0;
-      final double jornalesCosecha = (r['cosecha_jornales'] as num?)?.toDouble() ?? 0.0;
+      ''',
+        [cultivoId],
+      );
+      final double jornalesLabores =
+          (laboresRows.first['total'] as num?)?.toDouble() ?? 0.0;
+      final double jornalesCosecha =
+          (r['cosecha_jornales'] as num?)?.toDouble() ?? 0.0;
       final double totalJornales = jornalesLabores + jornalesCosecha;
 
       // Calcular % superficie sembrada
-      final pctAreaSembrada = AgriculturalCalculations.calculateSownAreaPercentage(
+      final pctAreaSembrada =
+          AgriculturalCalculations.calculateSownAreaPercentage(
             areaSembradaHa: areaSembrada,
             areaDisponibleHa: areaTerreno,
           ) ??
           0.0;
 
       // Calcular semilla kg/ha
-      final semillaKgHa = AgriculturalCalculations.calculateSeedPerHa(
+      final semillaKgHa =
+          AgriculturalCalculations.calculateSeedPerHa(
             kgSemilla: totalSemillaKg,
             areaHa: areaSembrada,
           ) ??
@@ -121,63 +132,83 @@ class IndicadoresRepository {
 
       // Cosecha
       final bool tieneCosecha = r['cosecha_id'] != null;
-      final double areaCosechada = (r['cosecha_area_ha'] as num?)?.toDouble() ?? 0.0;
-      final double produccionKg = (r['produccion_kg'] as num?)?.toDouble() ?? 0.0;
+      final double areaCosechada =
+          (r['cosecha_area_ha'] as num?)?.toDouble() ?? 0.0;
+      final double produccionKg =
+          (r['produccion_kg'] as num?)?.toDouble() ?? 0.0;
       final double? rendimiento = (r['rendimiento_kg_ha'] as num?)?.toDouble();
-      final double? productividad = (r['productividad_kg_jornal'] as num?)?.toDouble();
+      final double? productividad = (r['productividad_kg_jornal'] as num?)
+          ?.toDouble();
 
       // Completitud de registros agronómicos (%):
       // Campos evaluados: especie(1), variedad(1), area_sembrada(1), plan_siembra(1), fecha_prevista(1), fecha_real(1),
       // al menos 1 labor registrada(1), al menos 1 insumo registrado(1), cosecha registrada(1).
-      int completed = 3; // especie, variedad, area siempre presentes si se guardó cultivo
+      int completed =
+          3; // especie, variedad, area siempre presentes si se guardó cultivo
       int totalExpected = 9;
 
-      if (r['fecha_prevista'] != null && (r['fecha_prevista'] as String).isNotEmpty) completed++;
-      if (r['fecha_real'] != null && (r['fecha_real'] as String).isNotEmpty) completed++;
+      if (r['fecha_prevista'] != null &&
+          (r['fecha_prevista'] as String).isNotEmpty) {
+        completed++;
+      }
+      if (r['fecha_real'] != null && (r['fecha_real'] as String).isNotEmpty) {
+        completed++;
+      }
 
-      final int cantLabores = Sqflite.firstIntValue(
-            await db.rawQuery('SELECT COUNT(*) FROM labor WHERE cultivo_id = ?', [cultivoId]),
+      final int cantLabores =
+          Sqflite.firstIntValue(
+            await db.rawQuery(
+              'SELECT COUNT(*) FROM labor WHERE cultivo_id = ?',
+              [cultivoId],
+            ),
           ) ??
           0;
       if (cantLabores > 0) completed++;
 
-      final int cantInsumos = Sqflite.firstIntValue(
-            await db.rawQuery('SELECT COUNT(*) FROM insumo WHERE cultivo_id = ?', [cultivoId]),
+      final int cantInsumos =
+          Sqflite.firstIntValue(
+            await db.rawQuery(
+              'SELECT COUNT(*) FROM insumo WHERE cultivo_id = ?',
+              [cultivoId],
+            ),
           ) ??
           0;
       if (cantInsumos > 0) completed++;
 
       if (tieneCosecha) completed += 2; // cosecha registrada con datos
 
-      final pctCompletitud = AgriculturalCalculations.calculateCompletenessPercentage(
-        completedFields: completed,
-        totalFields: totalExpected,
-      );
+      final pctCompletitud =
+          AgriculturalCalculations.calculateCompletenessPercentage(
+            completedFields: completed,
+            totalFields: totalExpected,
+          );
 
-      lista.add(IndicadoresModel(
-        cultivoId: cultivoId,
-        agricultorNombre: r['agricultor_nombre'] as String,
-        terrenoNombre: r['terreno_nombre'] as String,
-        especie: r['especie'] as String,
-        variedad: r['variedad'] as String? ?? 'Común',
-        areaTerrenoHa: areaTerreno,
-        areaSembradaHa: areaSembrada,
-        fechaPrevista: r['fecha_prevista'] as String?,
-        fechaReal: r['fecha_real'] as String?,
-        desfaseSiembraDias: r['desfase_dias'] as int?,
-        pctRegistrosCompletos: pctCompletitud,
-        pctSuperficieSembrada: pctAreaSembrada,
-        totalSemillaKg: totalSemillaKg,
-        semillaKgHa: semillaKgHa,
-        jornalesFamiliaresTotal: totalJornales,
-        siembraIndividual: (r['siembra_individual'] as int? ?? 1) == 1,
-        tieneCosecha: tieneCosecha,
-        fechaCosecha: r['cosecha_fecha'] as String?,
-        areaCosechadaHa: areaCosechada,
-        produccionTotalKg: produccionKg,
-        rendimientoKgHa: rendimiento,
-        productividadKgJornal: productividad,
-      ));
+      lista.add(
+        IndicadoresModel(
+          cultivoId: cultivoId,
+          agricultorNombre: r['agricultor_nombre'] as String,
+          terrenoNombre: r['terreno_nombre'] as String,
+          especie: r['especie'] as String,
+          variedad: r['variedad'] as String? ?? 'Común',
+          areaTerrenoHa: areaTerreno,
+          areaSembradaHa: areaSembrada,
+          fechaPrevista: r['fecha_prevista'] as String?,
+          fechaReal: r['fecha_real'] as String?,
+          desfaseSiembraDias: r['desfase_dias'] as int?,
+          pctRegistrosCompletos: pctCompletitud,
+          pctSuperficieSembrada: pctAreaSembrada,
+          totalSemillaKg: totalSemillaKg,
+          semillaKgHa: semillaKgHa,
+          jornalesFamiliaresTotal: totalJornales,
+          siembraIndividual: (r['siembra_individual'] as int? ?? 1) == 1,
+          tieneCosecha: tieneCosecha,
+          fechaCosecha: r['cosecha_fecha'] as String?,
+          areaCosechadaHa: areaCosechada,
+          produccionTotalKg: produccionKg,
+          rendimientoKgHa: rendimiento,
+          productividadKgJornal: productividad,
+        ),
+      );
     }
 
     return lista;
@@ -188,12 +219,16 @@ class IndicadoresRepository {
     final indicadoresList = await getIndicadoresPorCultivo();
 
     // Terrenos
-    final terrenosCount = Sqflite.firstIntValue(
+    final terrenosCount =
+        Sqflite.firstIntValue(
           await db.rawQuery('SELECT COUNT(*) FROM terreno'),
         ) ??
         0;
-    final areaTerrenosRaw = await db.rawQuery('SELECT SUM(area_ha) as total FROM terreno');
-    final double areaTerrenosTotal = (areaTerrenosRaw.first['total'] as num?)?.toDouble() ?? 0.0;
+    final areaTerrenosRaw = await db.rawQuery(
+      'SELECT SUM(area_ha) as total FROM terreno',
+    );
+    final double areaTerrenosTotal =
+        (areaTerrenosRaw.first['total'] as num?)?.toDouble() ?? 0.0;
 
     // Cultivos
     final int totalCultivos = indicadoresList.length;
@@ -236,11 +271,16 @@ class IndicadoresRepository {
     }
 
     final double pctSuperficieGlobal = areaTerrenosTotal > 0
-        ? double.parse(((totalSuperficieSembrada / areaTerrenosTotal) * 100).toStringAsFixed(1))
+        ? double.parse(
+            ((totalSuperficieSembrada / areaTerrenosTotal) * 100)
+                .toStringAsFixed(1),
+          )
         : 0.0;
 
     final double promSemillaKgHa = totalSuperficieSembrada > 0
-        ? double.parse((totalSemillaKg / totalSuperficieSembrada).toStringAsFixed(1))
+        ? double.parse(
+            (totalSemillaKg / totalSuperficieSembrada).toStringAsFixed(1),
+          )
         : 0.0;
 
     final double promRendimiento = countRendimiento > 0
@@ -248,7 +288,9 @@ class IndicadoresRepository {
         : 0.0;
 
     final double promProductividad = countProductividad > 0
-        ? double.parse((sumaProductividad / countProductividad).toStringAsFixed(1))
+        ? double.parse(
+            (sumaProductividad / countProductividad).toStringAsFixed(1),
+          )
         : 0.0;
 
     final double promDesfase = countDesfase > 0

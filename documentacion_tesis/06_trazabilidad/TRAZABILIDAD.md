@@ -1,15 +1,15 @@
-# Trazabilidad requisito → historia → código → prueba
+# Trazabilidad requisito → código → prueba
 
-Las historias son tareas derivadas resumidas; la tesis indica que deben validarse con asesor/usuarios. El mapeo de código indica artefactos existentes, no aceptación funcional.
+La trazabilidad distingue presencia de implementación y verificación efectivamente ejecutada. Consulte `05_pruebas/REVISION_DOCUMENTACION_VS_CODIGO.md` para el dictamen comparativo.
 
-| Req. tesis | Historia derivada | Código relacionado | Evidencia/prueba | Estado |
-|---|---|---|---|---|
-| RF-01 Perfil agricultor | Crear/editar perfil | `perfil/perfil_screen.dart`, modelo/repositorio agricultor, proveedor | APP-01; EV-01 | Parcial; no conectado al arranque |
-| RF-02 Terrenos | Registrar/consultar terrenos | formularios/lista/detalle, `TerrenoRepository`, tabla terreno | APP-02; EV-02 | Parcial |
-| RF-03 Cultivo y siembra | Asociar cultivo y fechas | pantallas cultivo/plan, repositorios, tablas cultivo/plan_siembra | APP-03; EV-03, EV-07/08 | Parcial |
-| RF-04 Labores e insumos | Registrar actividad/insumo fechado | formularios y repositorios labor/insumo | APP-04; EV-04 | Parcial |
-| RF-05 Bitácora | Consultar por terreno/cultivo/tipo | `BitacoraRepository`, filtros de provider | APP-05; EV-05 | Consulta implementada en capa de datos; no hay pantalla localizada |
-| RF-06 Cosecha | Registrar producción y superficie | `CosechaRepository`, modelo, tabla cosecha | APP-06; EV-06 | Capa de datos; pantalla no localizada |
-| RNF-01 Sin señal | Capturar y leer localmente sin red | `DatabaseHelper`, sqflite/repositorios | OFF-01; EV-05/13 | Diseño local presente; operación no probada |
-| RNF-02 Usabilidad | Completar tareas guiadas | Formularios y validadores | Registro de observación propuesto | Pendiente |
-| RNF-03 Integridad | Validar campos y relaciones | `Validators`, migración SQLite y FKs | DB-01..04 | Restricciones presentes; verificación ejecutada pendiente |
+| Req. tesis | Código/interfaz | Prueba/evidencia | Estado verificado |
+|---|---|---|---|
+| RF-01 Perfil agricultor | `WelcomeScreen`, `PerfilScreen`, `AgricultorRepository`, `AllpaProvider` | UI-01/UI-02; EV-01; OFF-01/EV-13 | Bienvenida y navegación probadas; perfil sintético guardado y recuperado sin red tras relanzamiento |
+| RF-02 Terrenos | `TerrenosListScreen`, formularios/detalle, `TerrenoRepository` | DB-02 parcial; EV-02/10 pendientes | Código conectado; restricción y FK probadas en SQLite FFI, recorrido CRUD Android pendiente |
+| RF-03 Cultivo/siembra | `CultivosListScreen`, formularios/detalle, `PlanSiembraRepository` | UI-03 navegación; EV-03/07/08 pendientes | Código conectado; CRUD completo no probado |
+| RF-04 Labores e insumos | formularios/repositorios desde detalle de cultivo | EV-04 pendiente | Código conectado; captura y recorrido CRUD pendientes |
+| RF-05 Bitácora | `BitacoraScreen`, `BitacoraRepository`, filtros/CSV | EV-05/11 pendientes | Interfaz/código presente; verificación con registros pendiente |
+| RF-06 Cosecha | `CosechaFormScreen`, `CosechaRepository`, cálculos | EV-06 pendiente | Código conectado; recorrido CRUD pendiente |
+| RNF-01 Sin señal | `DatabaseHelper`, SQLite local y repositorios | OFF-01; EV-13 | Persistencia del perfil comprobada; otras entidades/operaciones offline pendientes |
+| RNF-02 Usabilidad | formularios y navegación | evaluación con participantes pendiente | No evaluado |
+| RNF-03 Integridad | `Validators`, migración SQLite, claves y checks | DB-01/DB-02 | Tablas/FK/área cero cubiertos; más restricciones pendientes |

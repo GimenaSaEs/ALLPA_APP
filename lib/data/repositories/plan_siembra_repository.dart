@@ -1,4 +1,3 @@
-import 'package:sqflite/sqflite.dart';
 import '../../core/database/database_helper.dart';
 import '../../core/utils/date_formatter.dart';
 import '../models/plan_siembra_model.dart';
@@ -7,7 +6,7 @@ class PlanSiembraRepository {
   final DatabaseHelper _dbHelper;
 
   PlanSiembraRepository({DatabaseHelper? dbHelper})
-      : _dbHelper = dbHelper ?? DatabaseHelper.instance;
+    : _dbHelper = dbHelper ?? DatabaseHelper.instance;
 
   Future<PlanSiembraModel?> getPlanByCultivoId(int cultivoId) async {
     final db = await _dbHelper.database;
@@ -30,7 +29,10 @@ class PlanSiembraRepository {
     int? desfase;
     String estado = plan.estado;
     if (plan.fechaPrevista != null && plan.fechaReal != null) {
-      desfase = DateFormatter.calculateDelayDays(plan.fechaPrevista, plan.fechaReal);
+      desfase = DateFormatter.calculateDelayDays(
+        plan.fechaPrevista,
+        plan.fechaReal,
+      );
       if (desfase == 0) {
         estado = 'Cumplido a tiempo';
       } else if (desfase != null && desfase > 0) {
@@ -44,10 +46,7 @@ class PlanSiembraRepository {
       estado = 'Pendiente de siembra';
     }
 
-    final toSave = plan.copyWith(
-      desfaseDias: desfase,
-      estado: estado,
-    );
+    final toSave = plan.copyWith(desfaseDias: desfase, estado: estado);
 
     final existing = await getPlanByCultivoId(plan.cultivoId);
     if (existing == null) {

@@ -55,9 +55,11 @@ class CosechaModel {
       produccionKg: (map['produccion_kg'] as num?)?.toDouble() ?? 0.0,
       jornales: (map['jornales'] as num?)?.toDouble() ?? 0.0,
       rendimientoKgHa: (map['rendimiento_kg_ha'] as num?)?.toDouble(),
-      productividadKgJornal: (map['productividad_kg_jornal'] as num?)?.toDouble(),
+      productividadKgJornal: (map['productividad_kg_jornal'] as num?)
+          ?.toDouble(),
       observacion: map['observacion'] as String?,
-      createdAt: map['created_at'] as String? ?? DateTime.now().toIso8601String(),
+      createdAt:
+          map['created_at'] as String? ?? DateTime.now().toIso8601String(),
       cultivoEspecie: map['cultivo_especie'] as String?,
       cultivoVariedad: map['cultivo_variedad'] as String?,
       terrenoNombre: map['terreno_nombre'] as String?,
@@ -87,7 +89,8 @@ class CosechaModel {
       produccionKg: produccionKg ?? this.produccionKg,
       jornales: jornales ?? this.jornales,
       rendimientoKgHa: rendimientoKgHa ?? this.rendimientoKgHa,
-      productividadKgJornal: productividadKgJornal ?? this.productividadKgJornal,
+      productividadKgJornal:
+          productividadKgJornal ?? this.productividadKgJornal,
       observacion: observacion ?? this.observacion,
       createdAt: createdAt ?? this.createdAt,
       cultivoEspecie: cultivoEspecie ?? this.cultivoEspecie,

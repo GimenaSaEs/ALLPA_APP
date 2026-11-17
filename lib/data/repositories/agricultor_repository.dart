@@ -6,7 +6,7 @@ class AgricultorRepository {
   final DatabaseHelper _dbHelper;
 
   AgricultorRepository({DatabaseHelper? dbHelper})
-      : _dbHelper = dbHelper ?? DatabaseHelper.instance;
+    : _dbHelper = dbHelper ?? DatabaseHelper.instance;
 
   Future<AgricultorModel?> getAgricultor() async {
     final db = await _dbHelper.database;
@@ -43,9 +43,11 @@ class AgricultorRepository {
 
   Future<bool> hasAgricultor() async {
     final db = await _dbHelper.database;
-    final count = Sqflite.firstIntValue(
-      await db.rawQuery('SELECT COUNT(*) FROM agricultor'),
-    ) ?? 0;
+    final count =
+        Sqflite.firstIntValue(
+          await db.rawQuery('SELECT COUNT(*) FROM agricultor'),
+        ) ??
+        0;
     return count > 0;
   }
 }
